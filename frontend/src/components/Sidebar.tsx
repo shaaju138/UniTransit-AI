@@ -3,19 +3,12 @@ import {
   LayoutDashboard,
   Radio,
   MapPin,
-  GraduationCap,
-  QrCode,
-  ScanLine,
-  KeyRound,
   BrainCircuit,
-  AlertTriangle,
   Lightbulb,
-  BarChart3,
   Bus,
   ArrowRightLeft,
   Settings,
   X,
-  Shield,
   ShieldCheck,
   User
 } from 'lucide-react';
@@ -25,13 +18,8 @@ export type NavTab =
   | 'dashboard'
   | 'live-monitoring'
   | 'routes'
-  | 'attendance'
-  | 'qr-attendance'
-  | 'bus-boarding'
   | 'ai-predictions'
-  | 'ai-alerts'
   | 'recommendations'
-  | 'analytics'
   | 'bus-management'
   | 'bus-allocation'
   | 'settings';
@@ -39,8 +27,7 @@ export type NavTab =
 interface SidebarProps {
   activeTab: NavTab;
   onSelectTab: (tab: NavTab) => void;
-  unreadAlertsCount: number;
-  pendingRecCount: number;
+  pendingRecCount?: number;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
   userRole?: UserRole;
@@ -49,11 +36,10 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
   onSelectTab,
-  unreadAlertsCount,
-  pendingRecCount,
+  pendingRecCount = 0,
   isMobileOpen = false,
   onCloseMobile,
-  userRole = 'ADMIN'
+  userRole = 'STUDENT'
 }) => {
   const allNavItems = [
     { 
@@ -61,7 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Dashboard', 
       icon: LayoutDashboard, 
       badge: null,
-      roles: ['ADMIN', 'FACULTY', 'STUDENT'] as UserRole[]
+      roles: ['ADMIN', 'STUDENT'] as UserRole[]
     },
     { 
       id: 'live-monitoring', 
@@ -69,53 +55,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: Radio, 
       badge: 'Live', 
       badgeColor: 'bg-emerald-100 text-emerald-700',
-      roles: ['ADMIN', 'FACULTY'] as UserRole[]
+      roles: ['ADMIN', 'STUDENT'] as UserRole[]
     },
     { 
       id: 'routes', 
-      label: 'Routes', 
+      label: 'Routes & Stops', 
       icon: MapPin, 
       badge: '3 Active',
-      roles: ['ADMIN', 'FACULTY', 'STUDENT'] as UserRole[]
-    },
-    { 
-      id: 'attendance', 
-      label: 'Attendance', 
-      icon: GraduationCap, 
-      badge: '91%',
-      roles: ['ADMIN', 'FACULTY'] as UserRole[]
-    },
-    { 
-      id: 'qr-attendance', 
-      label: 'QR Attendance', 
-      icon: QrCode, 
-      badge: 'Faculty', 
-      badgeColor: 'bg-indigo-100 text-indigo-700',
-      roles: ['ADMIN', 'FACULTY'] as UserRole[]
-    },
-    { 
-      id: 'bus-boarding', 
-      label: 'Bus Boarding', 
-      icon: KeyRound, 
-      badge: 'PIN', 
-      badgeColor: 'bg-emerald-100 text-emerald-800 font-bold',
       roles: ['ADMIN', 'STUDENT'] as UserRole[]
     },
     { 
       id: 'ai-predictions', 
-      label: 'AI Predictions', 
+      label: 'AI Bus Arrival Prediction', 
       icon: BrainCircuit, 
-      badge: 'R² 0.95', 
+      badge: 'AI ETA', 
       badgeColor: 'bg-purple-100 text-purple-700',
-      roles: ['ADMIN', 'FACULTY'] as UserRole[]
-    },
-    { 
-      id: 'ai-alerts', 
-      label: 'AI Alerts', 
-      icon: AlertTriangle, 
-      badge: unreadAlertsCount > 0 ? `${unreadAlertsCount}` : null, 
-      badgeColor: 'bg-red-100 text-red-700 animate-pulse font-bold',
-      roles: ['ADMIN', 'FACULTY'] as UserRole[]
+      roles: ['ADMIN', 'STUDENT'] as UserRole[]
     },
     { 
       id: 'recommendations', 
@@ -124,13 +79,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badge: pendingRecCount > 0 ? `${pendingRecCount} Action` : null, 
       badgeColor: 'bg-amber-100 text-amber-800',
       roles: ['ADMIN'] as UserRole[]
-    },
-    { 
-      id: 'analytics', 
-      label: 'Analytics', 
-      icon: BarChart3, 
-      badge: null,
-      roles: ['ADMIN', 'FACULTY'] as UserRole[]
     },
     { 
       id: 'bus-management', 
@@ -149,10 +97,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     { 
       id: 'settings', 
-      label: 'Settings & Scope', 
+      label: 'Settings', 
       icon: Settings, 
       badge: null,
-      roles: ['ADMIN', 'FACULTY', 'STUDENT'] as UserRole[]
+      roles: ['ADMIN', 'STUDENT'] as UserRole[]
     }
   ];
 
@@ -201,7 +149,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </span>
         <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 bg-sky-100 text-sky-800 border border-sky-200 shadow-2xs">
           {userRole === 'ADMIN' && <ShieldCheck className="w-3 h-3 text-sky-600" />}
-          {userRole === 'FACULTY' && <GraduationCap className="w-3 h-3 text-blue-600" />}
           {userRole === 'STUDENT' && <User className="w-3 h-3 text-emerald-600" />}
           <span>{userRole}</span>
         </span>

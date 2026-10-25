@@ -4,36 +4,29 @@ import { Sidebar, NavTab } from './components/Sidebar';
 import { Dashboard } from './pages/Dashboard';
 import { LiveMonitoring } from './pages/LiveMonitoring';
 import { RoutesPage } from './pages/RoutesPage';
-import { AttendancePage } from './pages/AttendancePage';
-import { QRAttendancePage } from './pages/QRAttendancePage';
 import { AIPredictionsPage } from './pages/AIPredictionsPage';
-import { AIAlertsPage } from './pages/AIAlertsPage';
 import { RecommendationsPage } from './pages/RecommendationsPage';
-import { AnalyticsPage } from './pages/AnalyticsPage';
 import { BusManagementPage } from './pages/BusManagementPage';
 import { BusAllocationPage } from './pages/BusAllocationPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { LoginPage } from './pages/LoginPage';
 import { api } from './services/api';
 import { Bus, Loader2 } from 'lucide-react';
-import { College, RouteItem, Vehicle, AttendanceSession, AIAlert, Recommendation, UserRole } from './types';
-import { INITIAL_COLLEGES, INITIAL_ROUTES, INITIAL_VEHICLES, INITIAL_SESSIONS, INITIAL_ALERTS, INITIAL_RECOMMENDATIONS } from './data/mockData';
+import { College, RouteItem, Vehicle, Recommendation, UserRole } from './types';
+import { INITIAL_COLLEGES, INITIAL_ROUTES, INITIAL_VEHICLES, INITIAL_RECOMMENDATIONS } from './data/mockData';
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [userRole, setUserRole] = useState<UserRole>('ADMIN');
+  const [userRole, setUserRole] = useState<UserRole>('STUDENT');
   const [isAuthChecking, setIsAuthChecking] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   
-  // Data state (NRIIT Pilot Environment)
+  // Data state (TransitIQ Environment)
   const [college] = useState<College>(INITIAL_COLLEGES[0]);
   const [routes, setRoutes] = useState<RouteItem[]>(INITIAL_ROUTES);
   const [vehicles, setVehicles] = useState<Vehicle[]>(INITIAL_VEHICLES);
-  const [sessions, setSessions] = useState<AttendanceSession[]>(INITIAL_SESSIONS);
-  const [alerts, setAlerts] = useState<AIAlert[]>(INITIAL_ALERTS);
   const [recommendations, setRecommendations] = useState<Recommendation[]>(INITIAL_RECOMMENDATIONS);
-  const [currentAttendance, setCurrentAttendance] = useState<number>(91);
 
   // 1. Session Persistence & Verification Guard
   useEffect(() => {
@@ -70,85 +63,43 @@ export function App() {
   useEffect(() => {
     if (!currentUser) return;
     const adminOnlyTabs: NavTab[] = ['bus-management', 'bus-allocation', 'recommendations'];
-    const studentRestrictedTabs: NavTab[] = [
-      'bus-management', 
-      'bus-allocation', 
-      'recommendations', 
-      'live-monitoring', 
-      'attendance', 
-      'ai-predictions', 
-      'ai-alerts', 
-      'analytics'
-    ];
 
-    if (userRole === 'STUDENT' && studentRestrictedTabs.includes(activeTab)) {
-      setActiveTab('dashboard');
-    } else if (userRole === 'FACULTY' && adminOnlyTabs.includes(activeTab)) {
+    if (userRole === 'STUDENT' && adminOnlyTabs.includes(activeTab)) {
       setActiveTab('dashboard');
     }
   }, [userRole, activeTab, currentUser]);
 
-  // 2. Initial Data Loading from Backend API / Supabase
+  // 2. Initial Data Loading from Backend API
   useEffect(() => {
     async function loadData() {
-      const [routeRes, vehRes, sessRes, altRes, recRes] = await Promise.all([
-        api.getRoutes(),
-        api.getVehicles(),
-        api.getSessions(),
-        api.getAlerts(),
-        api.getRecommendations()
-      ]);
-      if (routeRes) setRoutes(routeRes);
-      if (vehRes) setVehicles(vehRes);
-      if (sessRes) setSessions(sessRes);
-      if (altRes) setAlerts(altRes);
-      if (recRes) setRecommendations(recRes);
+      try {
+        const [routeRes, vehRes, recRes] = await Promise.all([
+          api.getRoutes(),
+          api.getVehicles(),
+          api.getRecommendations()
+        ]);
+        if (routeRes) setRoutes(routeRes);
+        if (vehRes) setVehicles(vehRes);
+        if (recRes) setRecommendations(recRes);
+      } catch (err) {
+        console.warn('Initial data load warning:', err);
+      }
     }
     loadData();
   }, []);
 
   // Handlers
-  const handleSimulateAttendance = async (pct: number) => {
-    setCurrentAttendance(pct);
-    const res = await api.simulateAttendance(pct);
-    if (res.routes) {
-      setRoutes([...res.routes]);
-    }
-  };
-
   const handleApplyRecommendation = async (id: string) => {
     const res = await api.applyRecommendation(id);
-    const [updatedRecs, updatedRoutes, updatedVehs, updatedAlts] = await Promise.all([
+    const [updatedRecs, updatedRoutes, updatedVehs] = await Promise.all([
       api.getRecommendations(),
       api.getRoutes(),
-      api.getVehicles(),
-      api.getAlerts()
+      api.getVehicles()
     ]);
     if (updatedRecs) setRecommendations([...updatedRecs]);
     if (updatedRoutes) setRoutes([...updatedRoutes]);
     if (updatedVehs) setVehicles([...updatedVehs]);
-    if (updatedAlts) setAlerts([...updatedAlts]);
     return res;
-  };
-
-  const handleGenerateSession = async (sessionData: any) => {
-    const newSession = await api.generateSession(sessionData);
-    setSessions(prev => [newSession, ...prev]);
-    return newSession;
-  };
-
-  const handleScanAttendance = async (payload: any) => {
-    const res = await api.scanAttendance(payload);
-    const updated = await api.getSessions();
-    if (updated) setSessions([...updated]);
-    return res;
-  };
-
-  const handleAcknowledgeAlert = async (id: string) => {
-    await api.acknowledgeAlert(id);
-    const updated = await api.getAlerts();
-    if (updated) setAlerts([...updated]);
-    return true;
   };
 
   const handleAddRoute = async (newRoute: Partial<RouteItem>) => {
@@ -167,8 +118,6 @@ export function App() {
     }
   };
 
-  const route1 = routes.find(r => r.id === 'route-1') || routes[0];
-  const unreadAlertsCount = alerts.filter(a => a.status === 'active').length;
   const pendingRecCount = recommendations.filter(r => r.status === 'pending').length;
 
   // Session Verification Loading Splash
@@ -202,13 +151,11 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50/60 via-slate-50 to-blue-50/40 flex flex-col antialiased w-full overflow-x-hidden">
-      {/* Universal Header (NRIIT Only) with Mobile Menu Toggle, Profile, and Working Logout */}
+      {/* Universal Header with Mobile Menu Toggle, Profile, and Working Logout */}
       <Header
         college={college}
         currentUser={currentUser}
         userRole={userRole}
-        unreadAlertsCount={unreadAlertsCount}
-        onOpenAlerts={() => setActiveTab('ai-alerts')}
         isMobileMenuOpen={isMobileMenuOpen}
         onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         onLogout={handleLogout}
@@ -216,18 +163,13 @@ export function App() {
       />
 
       <div className="flex-1 flex overflow-hidden w-full relative">
-        {/* Universal Sidebar & Mobile Drawer with RBAC Filtering */}
+        {/* Universal Sidebar & Mobile Drawer with Student & Admin Navigation */}
         <Sidebar
           activeTab={activeTab}
           onSelectTab={(t) => {
-            if (t === 'bus-boarding') {
-              setActiveTab('qr-attendance');
-            } else {
-              setActiveTab(t);
-            }
+            setActiveTab(t);
             setIsMobileMenuOpen(false);
           }}
-          unreadAlertsCount={unreadAlertsCount}
           pendingRecCount={pendingRecCount}
           isMobileOpen={isMobileMenuOpen}
           onCloseMobile={() => setIsMobileMenuOpen(false)}
@@ -242,21 +184,16 @@ export function App() {
                 routes={routes}
                 vehicles={vehicles}
                 currentUser={currentUser}
-                currentAttendance={currentAttendance}
-                onSimulateAttendance={handleSimulateAttendance}
                 onNavigateTab={(t) => setActiveTab(t)}
                 onApplyRecommendation={handleApplyRecommendation}
                 userRole={userRole}
-                alerts={alerts}
                 onRefreshData={async () => {
-                  const [routeRes, vehRes, altRes] = await Promise.all([
+                  const [routeRes, vehRes] = await Promise.all([
                     api.getRoutes(),
-                    api.getVehicles(),
-                    api.getAlerts()
+                    api.getVehicles()
                   ]);
                   if (routeRes) setRoutes(routeRes);
                   if (vehRes) setVehicles(vehRes);
-                  if (altRes) setAlerts(altRes);
                 }}
               />
             )}
@@ -272,37 +209,9 @@ export function App() {
               />
             )}
 
-            {activeTab === 'attendance' && (
-              <AttendancePage
-                currentAttendance={currentAttendance}
-                onSimulateAttendance={handleSimulateAttendance}
-              />
-            )}
-
-            {(activeTab === 'qr-attendance' || activeTab === 'bus-boarding') && (
-              <QRAttendancePage
-                sessions={sessions}
-                onGenerateSession={handleGenerateSession}
-                onScanAttendance={handleScanAttendance}
-                userRole={userRole}
-                onChangeRole={(r) => setUserRole(r)}
-                initialMode={activeTab === 'bus-boarding' ? 'BUS_BOARDING' : undefined}
-              />
-            )}
-
             {activeTab === 'ai-predictions' && (
               <AIPredictionsPage
                 routes={routes}
-                currentAttendance={currentAttendance}
-                onSimulateAttendance={handleSimulateAttendance}
-                onNavigateTab={(t) => setActiveTab(t)}
-              />
-            )}
-
-            {activeTab === 'ai-alerts' && (
-              <AIAlertsPage
-                alerts={alerts}
-                onAcknowledge={handleAcknowledgeAlert}
                 onNavigateTab={(t) => setActiveTab(t)}
               />
             )}
@@ -313,10 +222,6 @@ export function App() {
                 onApplyRecommendation={handleApplyRecommendation}
                 onNavigateTab={(t) => setActiveTab(t)}
               />
-            )}
-
-            {activeTab === 'analytics' && (
-              <AnalyticsPage />
             )}
 
             {activeTab === 'bus-management' && (

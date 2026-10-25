@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { 
   Building2, 
-  Bell, 
   User, 
   ChevronDown, 
   Bus,
@@ -17,9 +16,6 @@ interface HeaderProps {
   college: College;
   currentUser?: any;
   userRole: UserRole;
-  onChangeRole?: (role: UserRole) => void;
-  unreadAlertsCount: number;
-  onOpenAlerts: () => void;
   isMobileMenuOpen?: boolean;
   onToggleMobileMenu?: () => void;
   onLogout?: () => void;
@@ -30,8 +26,6 @@ export const Header: React.FC<HeaderProps> = ({
   college,
   currentUser,
   userRole,
-  unreadAlertsCount,
-  onOpenAlerts,
   isMobileMenuOpen = false,
   onToggleMobileMenu,
   onLogout,
@@ -320,21 +314,7 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* Notification Alert Bell Icon */}
-          <button
-            onClick={onOpenAlerts}
-            id="btn-alerts-header"
-            className="relative min-h-[44px] min-w-[44px] p-2 text-sky-700 hover:text-sky-900 bg-sky-50/80 hover:bg-sky-100 border border-sky-200/80 rounded-xl transition flex items-center justify-center shrink-0 cursor-pointer shadow-2xs"
-            title="View AI Overcrowding Alerts"
-            aria-label={`View AI Alerts. ${unreadAlertsCount} unread`}
-          >
-            <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-            {unreadAlertsCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
-                {unreadAlertsCount}
-              </span>
-            )}
-          </button>
+
         </div>
       </div>
     </header>

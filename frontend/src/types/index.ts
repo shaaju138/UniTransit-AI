@@ -150,7 +150,7 @@ export interface Recommendation {
   impact: string;
 }
 
-export type UserRole = 'ADMIN' | 'FACULTY' | 'STUDENT';
+export type UserRole = 'ADMIN' | 'STUDENT';
 
 export interface BoardingRecord {
   id: string;

@@ -683,10 +683,7 @@ export const api = {
         const user = { id: 'usr-admin-01', email: 'admin@smarttransit.com', fullName: 'NRI Transport Administration', role: 'ADMIN', department: 'Transport Operations' };
         this.saveSession('nri_demo_token_admin', user);
         return { success: true, user };
-      } else if (cleanIdent === 'faculty@nriit.edu.in' && password === 'faculty123') {
-        const user = { id: 'usr-faculty-01', email: 'faculty@nriit.edu.in', fullName: 'Dr. K. Srinivas (CSE)', role: 'FACULTY', department: 'Computer Science & Engineering' };
-        this.saveSession('nri_demo_token_faculty', user);
-        return { success: true, user };
+
       } else if ((cleanIdent === 'student@nriit.edu.in' || cleanIdent === '21nr1a0501') && password === 'student123') {
         const user = { 
           id: 'usr-student-01', 

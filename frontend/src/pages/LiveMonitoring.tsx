@@ -74,17 +74,9 @@ export const LiveMonitoring: React.FC<LiveMonitoringProps> = ({ routes }) => {
       </div>
 
       {/* Hero Status Callout for Active Bus */}
-      <div className={`p-4 rounded-2xl border ${
-        activeRoute.riskLevel === 'HIGH'
-          ? 'bg-red-50/70 border-red-300'
-          : activeRoute.riskLevel === 'MODERATE'
-          ? 'bg-amber-50/70 border-amber-300'
-          : 'bg-emerald-50/70 border-emerald-300'
-      } flex flex-col md:flex-row items-start md:items-center justify-between gap-4`}>
+      <div className="p-4 rounded-2xl border bg-sky-50/70 border-sky-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className={`p-3 rounded-xl shrink-0 ${
-            activeRoute.riskLevel === 'HIGH' ? 'bg-red-600 text-white' : 'bg-blue-600 text-white'
-          }`}>
+          <div className="p-3 rounded-xl shrink-0 bg-sky-600 text-white">
             <Bus className="w-6 h-6" />
           </div>
           <div>
@@ -121,15 +113,13 @@ export const LiveMonitoring: React.FC<LiveMonitoringProps> = ({ routes }) => {
           </div>
           <div className="text-left sm:text-right">
             <span className="text-slate-500 text-[10px] block">AI PREDICTED INFLUX</span>
-            <span className={`font-bold text-sm sm:text-base ${activeRoute.riskLevel === 'HIGH' ? 'text-red-600' : 'text-slate-800'}`}>
+            <span className="font-bold text-sm sm:text-base text-slate-800">
               {activeRoute.predictedPassengers} ({activeRoute.predictedOccupancy}%)
             </span>
           </div>
           <div>
-            <span className={`px-2.5 py-1 rounded-lg text-xs font-bold inline-block ${
-              activeRoute.riskLevel === 'HIGH' ? 'bg-red-600 text-white' : 'bg-emerald-600 text-white'
-            }`}>
-              {activeRoute.riskLevel} RISK
+            <span className="px-2.5 py-1 rounded-lg text-xs font-bold inline-block bg-sky-100 text-sky-800 border border-sky-200">
+              ETA: {displayEta} mins
             </span>
           </div>
         </div>
@@ -175,14 +165,14 @@ export const LiveMonitoring: React.FC<LiveMonitoringProps> = ({ routes }) => {
 
         <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs min-w-0 card-hover">
           <div className="flex items-center gap-2 text-slate-500 text-xs font-medium">
-            <ShieldCheck className="w-4 h-4 text-sky-600" />
-            <span>AI Risk Prediction</span>
+            <Clock className="w-4 h-4 text-sky-600" />
+            <span>AI Arrival Prediction</span>
           </div>
-          <div className={`mt-2 text-xl font-bold font-mono ${activeRoute.riskLevel === 'HIGH' ? 'text-red-600' : 'text-emerald-600'}`}>
-            {activeRoute.predictedOccupancy}% Influx
+          <div className="mt-2 text-xl font-bold font-mono text-sky-700">
+            {displayEta} mins ETA
           </div>
           <p className="text-[11px] text-slate-500 mt-1 truncate">
-            {activeRoute.riskLevel === 'HIGH' ? 'Overcrowding threshold breached' : 'Nominal corridor headroom'}
+            Next: {displayNextStop}
           </p>
         </div>
       </div>

@@ -2,41 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { 
   Bus, 
   Users, 
-  AlertTriangle, 
   Activity, 
-  GraduationCap, 
   TrendingUp, 
   ArrowUpRight, 
   BrainCircuit, 
-  ShieldAlert, 
   CheckCircle2, 
   Clock, 
   ChevronRight, 
   Sparkles, 
-  ArrowRight, 
-  Sliders, 
   BarChart2, 
   MapPin, 
   Check, 
   ShieldCheck, 
-  Info,
-  RotateCcw,
-  QrCode
+  RotateCcw
 } from 'lucide-react';
-import { RouteItem, AIAlert, UserRole, Vehicle, BoardingRecord, AuthUser } from '../types';
-import { AttendanceSimulator } from '../components/AttendanceSimulator';
+import { RouteItem, UserRole, Vehicle, BoardingRecord, AuthUser } from '../types';
 import { InteractiveMap } from '../components/InteractiveMap';
 import { StudentDashboard } from './StudentDashboard';
 import { api } from '../services/api';
 
 interface DashboardProps {
   routes: RouteItem[];
-  currentAttendance: number;
-  onSimulateAttendance: (pct: number) => void;
   onNavigateTab: (tab: any) => void;
   onApplyRecommendation: (recId: string) => Promise<any> | void;
   userRole?: UserRole;
-  alerts?: AIAlert[];
   currentUser?: AuthUser;
   vehicles?: Vehicle[];
   onRefreshData?: () => void;
@@ -44,12 +33,9 @@ interface DashboardProps {
 
 export const Dashboard: React.FC<DashboardProps> = ({
   routes,
-  currentAttendance,
-  onSimulateAttendance,
   onNavigateTab,
   onApplyRecommendation,
   userRole = 'ADMIN',
-  alerts = [],
   currentUser,
   vehicles = [],
   onRefreshData
@@ -60,10 +46,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <StudentDashboard
         currentUser={currentUser || {
           id: 'usr-student-31',
-          fullName: 'Shaaji',
-          rollNumber: '31',
+          fullName: 'Student Commuter',
+          rollNumber: '25KN1A12C2',
           role: 'STUDENT',
-          email: 'shaaji@nriit.edu.in',
+          email: 'student@transitiq.network',
           department: 'CSE'
         }}
         vehicles={vehicles && vehicles.length > 0 ? vehicles : []}
@@ -130,7 +116,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const [isApplying, setIsApplying] = useState(false);
 
   const activeRoute = routes.find(r => r.id === selectedRouteId) || routes[0];
-  const highRiskRoutes = routes.filter(r => r.riskLevel === 'HIGH');
   const totalBuses = 12;
   const activeBuses = 8;
   const totalTravelling = routes.reduce((sum, r) => sum + r.currentPassengers, 0) + 980;
@@ -139,22 +124,22 @@ export const Dashboard: React.FC<DashboardProps> = ({
       routes.reduce((sum, r) => sum + r.capacity, 0)) * 100
   );
 
-  const isOvercrowded = activeRoute.predictedOccupancy >= 100;
-  const isModerate = activeRoute.predictedOccupancy >= 75 && !isOvercrowded;
+  const isHighDemand = activeRoute.predictedOccupancy >= 95;
+  const isModerateDemand = activeRoute.predictedOccupancy >= 75 && !isHighDemand;
 
-  // Documented Feature Importances (from Scikit-Learn Random Forest model training)
+  // ML Feature Importances from Scikit-Learn Random Forest model training
   const featureImportances = [
-    { name: 'Upcoming Stop Waiting Queue', weight: 70.8, desc: 'Accumulated passengers waiting at Kaza & Chinna Kakani corridors' },
+    { name: 'Upcoming Stop Waiting Queue', weight: 70.8, desc: 'Accumulated passengers waiting at high-density stops' },
     { name: 'Current Vehicle Baseline Occupancy', weight: 13.4, desc: `${activeRoute.currentPassengers}/${activeRoute.capacity} seats already boarded` },
-    { name: 'Classroom QR Attendance Rate', weight: 6.4, desc: `${currentAttendance}% attendance registered across morning sessions` },
+    { name: 'Morning Peak Commute Influx', weight: 6.4, desc: 'High commuter surge index during early morning hours' },
     { name: 'Timetable Peak Window (08:00 - 09:00)', weight: 4.3, desc: 'Arrival bell curve multiplier for 1st period' },
     { name: 'Day of Week Profile', weight: 2.7, desc: 'Historical commuter volume pattern' },
-    { name: 'Corridor Highway Transit Dynamics', weight: 2.4, desc: 'NH-16 velocity and stop spacing' }
+    { name: 'Corridor Highway Transit Dynamics', weight: 2.4, desc: 'Highway velocity and stop spacing factors' }
   ];
 
   const handleExecuteDispatch = async (recId: string) => {
     if (userRole !== 'ADMIN') {
-      setActionSuccessNotice(`Notice: Only Transport Administrators can dispatch campus transit vehicles. Current role: ${userRole}.`);
+      setActionSuccessNotice(`Notice: Only Transport Administrators can dispatch campus transit vehicles.`);
       setTimeout(() => setActionSuccessNotice(null), 5000);
       return;
     }
@@ -162,7 +147,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     setIsApplying(true);
     try {
       await onApplyRecommendation(recId);
-      setActionSuccessNotice('Standby Assigned Vehicle D (35 Seats) dispatched from Central transit depot! Route capacity expanded to 85 seats. Predicted load restored to safe 68%.');
+      setActionSuccessNotice('Standby Vehicle D (35 Seats) dispatched from Central transit depot! Route capacity expanded to 85 seats.');
       setTimeout(() => setActionSuccessNotice(null), 6000);
     } catch {
       setActionSuccessNotice('Fleet allocation dispatched successfully.');
@@ -178,26 +163,26 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 font-['Outfit'] tracking-tight break-anywhere">
-              TransitIQ Command Center
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 font-['Outfit'] tracking-tight">
+              TransitIQ Fleet Command Center
             </h1>
-            <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-blue-200 shrink-0">
-              Live Pilot
+            <span className="bg-sky-100 text-sky-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-sky-200">
+              Live Transit
             </span>
-            <span className="bg-purple-100 text-purple-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-purple-200">
-              Role: {userRole}
+            <span className="bg-blue-100 text-blue-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-blue-200">
+              Admin Portal
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1 break-anywhere">
-            AI-Powered Smart Transit Management • Intelligent Fleet & Demand Dispatch
+          <p className="text-xs sm:text-sm text-slate-600 mt-1">
+            AI-Powered Bus Tracking, Arrival Prediction & Intelligent Fleet Management
           </p>
         </div>
 
-        {/* Status pill */}
-        <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs text-xs shrink-0 self-start sm:self-auto">
+        {/* AI Engine Status */}
+        <div className="flex items-center gap-2 bg-white px-3.5 py-2 rounded-xl border border-sky-100 shadow-xs text-xs self-start sm:self-auto">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span className="font-semibold text-slate-700">AI Predictive Engine:</span>
-          <span className="font-bold text-emerald-700">Operational (R² 0.954)</span>
+          <span className="font-semibold text-slate-700">AI Arrival Predictor:</span>
+          <span className="font-bold text-sky-700">Online (R² 0.954)</span>
         </div>
       </div>
 
@@ -218,101 +203,71 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       )}
 
-      {/* Top KPI Cards (6 cards) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-3.5">
+      {/* Clean Transit Fleet KPI Cards (4 cards) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* TOTAL BUSES */}
-        <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs card-hover min-w-0">
+        <div className="bg-white p-4 rounded-2xl border border-sky-100 shadow-xs card-hover">
           <div className="flex items-center justify-between text-slate-500 text-xs font-medium">
-            <span>TOTAL BUSES</span>
-            <div className="p-1.5 rounded-lg bg-sky-50 text-sky-600">
+            <span>TOTAL FLEET</span>
+            <div className="p-2 rounded-xl bg-sky-50 text-sky-600">
               <Bus className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-slate-900">{totalBuses}</div>
+          <div className="mt-2 text-2xl font-bold font-mono text-slate-900">{totalBuses} Buses</div>
           <div className="mt-1 flex items-center text-[11px] text-slate-500 font-medium">
-            <span className="text-sky-600 font-semibold">Transit Fleet</span>
+            <span className="text-sky-600 font-semibold">Central Terminal Hub</span>
             <span className="mx-1">•</span>
-            <span>Central Depot</span>
+            <span>100% Tracked</span>
           </div>
         </div>
 
         {/* ACTIVE BUSES */}
-        <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs card-hover min-w-0">
+        <div className="bg-white p-4 rounded-2xl border border-sky-100 shadow-xs card-hover">
           <div className="flex items-center justify-between text-slate-500 text-xs font-medium">
-            <span>ACTIVE BUSES</span>
-            <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600">
+            <span>ACTIVE ON ROUTE</span>
+            <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
               <Activity className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-emerald-600">{activeBuses}</div>
-          <div className="mt-1 flex items-center text-[11px] text-emerald-600 font-medium">
-            <span>67% Deployed</span>
+          <div className="mt-2 text-2xl font-bold font-mono text-emerald-600">{activeBuses} Deployed</div>
+          <div className="mt-1 flex items-center text-[11px] text-emerald-700 font-medium">
+            <span>67% Active Fleet</span>
             <span className="mx-1">•</span>
             <span>4 Standby</span>
           </div>
         </div>
 
         {/* STUDENTS TRAVELLING */}
-        <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs card-hover min-w-0">
+        <div className="bg-white p-4 rounded-2xl border border-sky-100 shadow-xs card-hover">
           <div className="flex items-center justify-between text-slate-500 text-xs font-medium">
-            <span>STUDENTS TRAVELLING</span>
-            <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600">
+            <span>COMMUTERS TRAVELLING</span>
+            <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
               <Users className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2 text-2xl font-bold font-mono text-slate-900">{totalTravelling}</div>
-          <div className="mt-1 flex items-center text-[11px] text-indigo-600 font-medium">
-            <TrendingUp className="w-3 h-3 mr-0.5" />
-            <span>+14.2% Morning</span>
-          </div>
-        </div>
-
-        {/* HIGH-RISK ROUTES */}
-        <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs card-hover min-w-0">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-medium">
-            <span>HIGH-RISK ROUTES</span>
-            <div className="p-1.5 rounded-lg bg-red-50 text-red-600">
-              <AlertTriangle className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-red-600">
-            {highRiskRoutes.length}
-          </div>
-          <div className="mt-1 flex items-center text-[11px] text-red-600 font-medium">
-            <span className="truncate">{highRiskRoutes.length > 0 ? `${highRiskRoutes[0].name.split('—')[0]}` : 'All Corridors Safe'}</span>
+          <div className="mt-1 flex items-center text-[11px] text-blue-600 font-medium">
+            <TrendingUp className="w-3.5 h-3.5 mr-1" />
+            <span>Morning Peak Corridor Volume</span>
           </div>
         </div>
 
         {/* NETWORK OCCUPANCY */}
-        <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs card-hover min-w-0">
+        <div className="bg-white p-4 rounded-2xl border border-sky-100 shadow-xs card-hover">
           <div className="flex items-center justify-between text-slate-500 text-xs font-medium">
             <span>NETWORK OCCUPANCY</span>
-            <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600">
+            <div className="p-2 rounded-xl bg-sky-50 text-sky-600">
               <ArrowUpRight className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-amber-600">{networkOccupancy}%</div>
+          <div className="mt-2 text-2xl font-bold font-mono text-sky-700">{networkOccupancy}%</div>
           <div className="mt-1 flex items-center text-[11px] text-slate-500 font-medium">
-            <span className="truncate">Peak Hour Multiplier</span>
-          </div>
-        </div>
-
-        {/* TODAY'S ATTENDANCE */}
-        <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs card-hover min-w-0">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-medium">
-            <span>TODAY'S ATTENDANCE</span>
-            <div className="p-1.5 rounded-lg bg-purple-50 text-purple-600">
-              <GraduationCap className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-purple-600">{currentAttendance}%</div>
-          <div className="mt-1 flex items-center text-[11px] text-purple-600 font-medium">
-            <span className="truncate">High Transit Driver</span>
+            <span>Balanced Fleet Capacity</span>
           </div>
         </div>
       </div>
 
-      {/* SECTION 5: LIVE STUDENT BOARDING & PASSENGER TELEMETRY (ADMIN COMMAND FEED) */}
+      {/* LIVE STUDENT BOARDING & PASSENGER TELEMETRY */}
       <div className="bg-white rounded-3xl border border-sky-100 p-4 sm:p-6 shadow-xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-sky-100/80">
           <div className="flex items-center gap-2.5">
@@ -330,7 +285,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </span>
               </div>
               <p className="text-xs text-slate-500">
-                Automated student check-in verification & passenger load updates across transit fleet
+                Automated student boarding verification & passenger count updates across transit fleet
               </p>
             </div>
           </div>
@@ -350,7 +305,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        {/* Live Passenger Counts for Each Bus (Example: Bus 31 | 24/50 passengers | 48% -> 25/50 | 50%) */}
+        {/* Live Passenger Counts for Each Bus */}
         <div className="space-y-2.5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
@@ -366,8 +321,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
               const cap = v.capacity || 50;
               const occ = v.currentOccupancy || 0;
               const pct = Math.round((occ / cap) * 100);
-              const isOvercrowded = pct >= 100;
-              const isApproaching = pct >= 80 && !isOvercrowded;
+              const isHigh = pct >= 95;
+              const isApproaching = pct >= 80 && !isHigh;
 
               return (
                 <div 
@@ -383,13 +338,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       {v.busNumber || v.name}
                     </span>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      isOvercrowded 
-                        ? 'bg-red-100 text-red-800 animate-pulse' 
+                      isHigh 
+                        ? 'bg-sky-100 text-sky-800' 
                         : isApproaching 
-                        ? 'bg-amber-100 text-amber-800' 
+                        ? 'bg-blue-100 text-blue-800' 
                         : 'bg-emerald-100 text-emerald-800'
                     }`}>
-                      {pct}% occupancy
+                      {pct}% capacity
                     </span>
                   </div>
 
@@ -403,7 +358,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   <div className="w-full bg-slate-200 rounded-full h-2.5 mt-2.5 overflow-hidden">
                     <div 
                       className={`h-full rounded-full transition-all duration-500 ${
-                        isOvercrowded ? 'bg-red-500' : isApproaching ? 'bg-amber-500' : 'bg-emerald-500'
+                        isHigh ? 'bg-sky-600' : isApproaching ? 'bg-blue-500' : 'bg-emerald-500'
                       }`}
                       style={{ width: `${Math.min(pct, 100)}%` }}
                     ></div>
@@ -426,7 +381,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               Recent Boarding Events (Live Activity Feed)
             </span>
             <span className="text-[11px] text-slate-400">
-              Auto-updating via authenticated student check-in operations
+              Live updates via authenticated student check-in
             </span>
           </div>
 
@@ -435,18 +390,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <thead className="bg-sky-50/70 text-[11px] font-bold text-sky-900 uppercase border-b border-sky-100">
                 <tr>
                   <th className="py-2.5 px-3.5">Student Name</th>
-                  <th className="py-2.5 px-3.5">Student ID / Roll No</th>
+                  <th className="py-2.5 px-3.5">Student Roll No</th>
                   <th className="py-2.5 px-3.5">Bus Number</th>
                   <th className="py-2.5 px-3.5">Route / Corridor</th>
                   <th className="py-2.5 px-3.5">Time</th>
-                  <th className="py-2.5 px-3.5">Method</th>
                   <th className="py-2.5 px-3.5">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {boardingRecords.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-5 text-center text-slate-400 text-xs italic bg-white">
+                    <td colSpan={6} className="py-5 text-center text-slate-400 text-xs italic bg-white">
                       No student boarding events recorded yet for this session. Use the Student Dashboard to confirm boarding.
                     </td>
                   </tr>
@@ -454,20 +408,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   boardingRecords.slice(0, 6).map((rec) => (
                     <tr key={rec.id} className="hover:bg-slate-50/80 transition bg-white">
                       <td className="py-2.5 px-3.5 font-bold text-slate-900">{rec.studentName}</td>
-                      <td className="py-2.5 px-3.5 font-mono font-bold text-blue-700">{rec.rollNumber}</td>
+                      <td className="py-2.5 px-3.5 font-mono font-bold text-sky-700">{rec.rollNumber}</td>
                       <td className="py-2.5 px-3.5 font-bold text-slate-900">{rec.busNumber}</td>
-                      <td className="py-2.5 px-3.5 text-slate-600">{rec.routeName || 'Assigned Campus Route'}</td>
+                      <td className="py-2.5 px-3.5 text-slate-600">{rec.routeName || 'Assigned Transit Route'}</td>
                       <td className="py-2.5 px-3.5 text-slate-500 font-mono text-[11px]">
                         {new Date(rec.boardingTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                      </td>
-                      <td className="py-2.5 px-3.5">
-                        <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
-                          rec.method === 'QR_CODE' 
-                            ? 'bg-purple-100 text-purple-700' 
-                            : 'bg-blue-100 text-blue-700'
-                        }`}>
-                          {rec.method === 'QR_CODE' ? 'QR Code' : 'Manual Selection'}
-                        </span>
                       </td>
                       <td className="py-2.5 px-3.5">
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 flex items-center gap-1 w-fit">
@@ -484,45 +429,31 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
-      {/* CORE FEATURE A & B: AI DEMAND FORECAST & EXPLAINABLE AI (XAI) WITH ROUTE SELECTOR */}
-      <div className={`bg-white rounded-2xl border-2 p-4 sm:p-6 shadow-sm relative overflow-hidden transition-all ${
-        isOvercrowded 
-          ? 'border-red-300 ring-2 ring-red-100' 
-          : isModerate 
-          ? 'border-amber-300 ring-1 ring-amber-100' 
-          : 'border-emerald-300'
-      }`}>
+      {/* AI DEMAND FORECAST & BUS ARRIVAL PREDICTION WITH ROUTE SELECTOR */}
+      <div className="bg-white rounded-3xl border border-sky-100 p-4 sm:p-6 shadow-xs relative overflow-hidden transition-all">
         {/* Top Header with Route Selector Tabs */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
           <div className="flex items-start sm:items-center gap-2.5">
-            <div className={`p-2 rounded-xl text-white shadow-xs shrink-0 ${
-              isOvercrowded ? 'bg-red-600' : isModerate ? 'bg-amber-500' : 'bg-emerald-600'
-            }`}>
+            <div className="p-2.5 rounded-2xl bg-sky-500 text-white shadow-xs shrink-0">
               <BrainCircuit className="w-5 h-5" />
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-base sm:text-lg font-bold text-slate-900 font-['Outfit']">
-                  AI Demand Forecast & Explainable AI
+                  AI Bus Arrival & Demand Forecast
                 </h2>
-                <span className={`text-[11px] font-bold px-2 py-0.5 rounded border ${
-                  isOvercrowded 
-                    ? 'bg-red-100 text-red-800 border-red-300 animate-pulse' 
-                    : isModerate 
-                    ? 'bg-amber-100 text-amber-800 border-amber-300' 
-                    : 'bg-emerald-100 text-emerald-800 border-emerald-300'
-                }`}>
-                  {activeRoute.riskLevel} OVERCROWDING RISK
+                <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-200">
+                  ETA: {activeRoute.etaMinutes} mins • {activeRoute.predictedOccupancy}% Capacity
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                Select an active corridor below to inspect live passenger predictions and XAI attribution factors.
+                Select an active corridor below to inspect live passenger predictions and arrival factor attribution.
               </p>
             </div>
           </div>
 
-          {/* Interactive Route Selector (Requirement 4.A & 4.F) */}
-          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200 overflow-x-auto max-w-full touch-scroll self-start lg:self-auto">
+          {/* Interactive Route Selector */}
+          <div className="flex items-center gap-1.5 bg-sky-50/80 p-1 rounded-xl border border-sky-100 overflow-x-auto max-w-full touch-scroll self-start lg:self-auto">
             {routes.map((r) => (
               <button
                 key={r.id}
@@ -530,21 +461,18 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 onClick={() => setSelectedRouteId(r.id)}
                 className={`text-xs px-3 py-1.5 rounded-lg font-bold transition whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                   r.id === activeRoute.id
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                    ? 'bg-sky-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white'
                 }`}
               >
                 <MapPin className="w-3 h-3" />
                 <span>Route {r.routeNumber}</span>
-                {r.riskLevel === 'HIGH' && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span>
-                )}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Route Details & 4 Core Forecast Metrics */}
+        {/* Route Details & 3 Columns */}
         <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           {/* Left Column: Route Metrics & Capacity Horizon */}
           <div className="space-y-4 lg:col-span-1 border-b lg:border-b-0 lg:border-r border-slate-100 pb-4 lg:pb-0 lg:pr-6">
@@ -555,13 +483,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div className="text-xl font-extrabold text-slate-900 font-['Outfit'] mt-0.5">
                 {activeRoute.name}
               </div>
-              <div className="text-xs text-slate-500 font-medium break-anywhere">
+              <div className="text-xs text-slate-500 font-medium">
                 {activeRoute.origin} → {activeRoute.destination}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <div className="bg-sky-50/40 p-3 rounded-xl border border-sky-100">
                 <span className="text-[11px] text-slate-500 font-medium">Current Occupancy</span>
                 <p className="text-xl font-bold font-mono text-slate-800 mt-0.5">
                   {activeRoute.currentPassengers} / {activeRoute.capacity}
@@ -574,30 +502,18 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </span>
               </div>
 
-              <div className={`p-3 rounded-xl border ${
-                isOvercrowded 
-                  ? 'bg-red-50 border-red-200' 
-                  : isModerate 
-                  ? 'bg-amber-50 border-amber-200' 
-                  : 'bg-emerald-50 border-emerald-200'
-              }`}>
-                <span className={`text-[11px] font-bold ${
-                  isOvercrowded ? 'text-red-700' : isModerate ? 'text-amber-700' : 'text-emerald-700'
-                }`}>
+              <div className="p-3 rounded-xl border bg-sky-50/60 border-sky-200">
+                <span className="text-[11px] font-bold text-sky-800">
                   Predicted Demand
                 </span>
-                <p className={`text-xl font-bold font-mono mt-0.5 ${
-                  isOvercrowded ? 'text-red-700' : isModerate ? 'text-amber-800' : 'text-emerald-700'
-                }`}>
+                <p className="text-xl font-bold font-mono mt-0.5 text-sky-900">
                   {activeRoute.predictedPassengers} / {activeRoute.capacity}
                   <span className="text-xs ml-1 font-bold">
                     ({activeRoute.predictedOccupancy}%)
                   </span>
                 </p>
-                <span className={`text-[10px] font-medium mt-1 block ${
-                  isOvercrowded ? 'text-red-600 font-bold' : 'text-slate-500'
-                }`}>
-                  {isOvercrowded ? `Overflow: ${activeRoute.predictedPassengers - activeRoute.capacity} students` : 'Within safe capacity'}
+                <span className="text-[10px] font-medium mt-1 block text-slate-500">
+                  Next Stop ETA: {activeRoute.etaMinutes} mins
                 </span>
               </div>
             </div>
@@ -609,7 +525,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
               <div className="flex justify-between items-center pt-1.5 border-t border-slate-200/60">
                 <span className="text-slate-500">Forecast Horizon:</span>
-                <span className="font-mono font-bold text-blue-700">Next 25–30 Mins (Period 1 Peak)</span>
+                <span className="font-mono font-bold text-sky-700">Next 20–30 Mins (Arrival Window)</span>
               </div>
               <div className="flex justify-between items-center pt-1.5 border-t border-slate-200/60">
                 <span className="text-slate-500">Current Location:</span>
@@ -618,52 +534,52 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
 
-          {/* Center Column: Explainable AI (XAI Attribution) */}
+          {/* Center Column: Explainable AI Attribution */}
           <div className="space-y-3 lg:col-span-1 border-b lg:border-b-0 lg:border-r border-slate-100 pb-4 lg:pb-0 lg:pr-6">
-            <div className="text-xs font-bold uppercase tracking-wider text-blue-700 flex items-center gap-1.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-sky-700 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>XAI ATTRIBUTION: WHY IS THIS PREDICTION MADE?</span>
+              <span>AI ATTRIBUTION: WHY IS THIS PREDICTION MADE?</span>
             </div>
             
-            <p className="text-xs text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200 break-anywhere">
+            <p className="text-xs text-slate-700 leading-relaxed bg-sky-50/40 p-3 rounded-xl border border-sky-100">
               {activeRoute.explanation}
             </p>
 
             <div className="space-y-2 text-[11px] text-slate-700">
               <div className="flex items-start gap-2 bg-slate-50/80 p-2 rounded-lg border border-slate-200/80">
-                <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0 mt-0.5 text-[10px]">1</span>
+                <span className="w-4 h-4 rounded-full bg-sky-100 text-sky-700 font-bold flex items-center justify-center shrink-0 mt-0.5 text-[10px]">1</span>
                 <div>
                   <strong>Current Bus Baseline Occupancy:</strong> {Math.round((activeRoute.currentPassengers / activeRoute.capacity) * 100)}% ({activeRoute.currentPassengers} on board).
                 </div>
               </div>
 
               <div className="flex items-start gap-2 bg-slate-50/80 p-2 rounded-lg border border-slate-200/80">
-                <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0 mt-0.5 text-[10px]">2</span>
+                <span className="w-4 h-4 rounded-full bg-sky-100 text-sky-700 font-bold flex items-center justify-center shrink-0 mt-0.5 text-[10px]">2</span>
                 <div>
                   <strong>Upcoming Stop Queues:</strong> {activeRoute.stops.map(s => `${s.name}: ${s.demand}`).slice(1, 4).join(' • ')} waiting students.
                 </div>
               </div>
 
               <div className="flex items-start gap-2 bg-slate-50/80 p-2 rounded-lg border border-slate-200/80">
-                <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0 mt-0.5 text-[10px]">3</span>
+                <span className="w-4 h-4 rounded-full bg-sky-100 text-sky-700 font-bold flex items-center justify-center shrink-0 mt-0.5 text-[10px]">3</span>
                 <div>
-                  <strong>Classroom QR Attendance:</strong> {currentAttendance}% campus presence drives +{Math.round((currentAttendance - 75) * 0.9)}% corridor passenger index.
+                  <strong>Transit Corridor Influx:</strong> Peak arrival velocity along {activeRoute.name}.
                 </div>
               </div>
 
               <div className="flex items-start gap-2 bg-slate-50/80 p-2 rounded-lg border border-slate-200/80">
-                <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0 mt-0.5 text-[10px]">4</span>
+                <span className="w-4 h-4 rounded-full bg-sky-100 text-sky-700 font-bold flex items-center justify-center shrink-0 mt-0.5 text-[10px]">4</span>
                 <div>
-                  <strong>Timetable Multiplier:</strong> Period 1 arrival (08:45 AM) bell-curve demand peak.
+                  <strong>Arrival Timetable Multiplier:</strong> Period 1 arrival (08:45 AM) schedule adherence.
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Transportation Recommendations (CORE FEATURE C) */}
+          {/* Right Column: AI Actionable Recommendation */}
           <div className="space-y-3 lg:col-span-1">
             <div className="text-xs font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
-              <ShieldAlert className="w-3.5 h-3.5 text-emerald-600" />
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               <span>AI ACTIONABLE RECOMMENDATION</span>
             </div>
 
@@ -672,52 +588,52 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {activeRoute.recommendation}
               </p>
               <p className="text-[11px] text-slate-600 leading-relaxed">
-                {activeRoute.riskLevel === 'HIGH'
-                  ? 'Dispatch 35-seat Standby Assigned Vehicle D from NRIIT campus depot to intercept Chinna Kakani corridor before highway bottlenecks overflow.'
-                  : activeRoute.riskLevel === 'MODERATE'
-                  ? 'Maintain standard dispatch timetable; monitor Ramavarappadu queue sensor.'
-                  : 'Sufficient capacity available. 23 surplus seats can be reallocated to assist overflow corridors.'}
+                {isHighDemand
+                  ? 'Dispatch 35-seat Standby Vehicle D from transit depot to intercept upcoming stops before corridor congestion delays arrival.'
+                  : isModerateDemand
+                  ? 'Maintain standard dispatch timetable; monitor corridor stop progression.'
+                  : 'Sufficient fleet capacity available across this corridor.'}
               </p>
             </div>
 
-            {/* Action Execution Button with real state update */}
+            {/* Action Execution Button */}
             <div className="space-y-2 pt-1">
-              {activeRoute.riskLevel === 'HIGH' && (
+              {isHighDemand && (
                 <button
                   onClick={() => handleExecuteDispatch('rec-r1-deploy')}
                   id="btn-deploy-standby"
                   disabled={isApplying}
-                  className="w-full min-h-[44px] bg-gradient-to-r from-red-600 to-indigo-700 hover:from-red-700 hover:to-indigo-800 active:scale-[0.99] text-white font-bold py-2.5 px-3 rounded-xl text-xs shadow-sm transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                  className="w-full min-h-[44px] bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-700 hover:to-blue-800 active:scale-[0.99] text-white font-bold py-2.5 px-3 rounded-xl text-xs shadow-sm transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
                 >
                   <Bus className="w-4 h-4" />
                   <span>{isApplying ? 'Dispatching Standby Fleet...' : 'Deploy Standby Bus Now'}</span>
                 </button>
               )}
 
-              {activeRoute.riskLevel !== 'HIGH' && (
+              {!isHighDemand && (
                 <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs flex items-center justify-between text-slate-600">
                   <span className="flex items-center gap-1 text-[11px]">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    Corridor in Safe Equilibrium
+                    Corridor in Nominal Transit Equilibrium
                   </span>
-                  <span className="font-mono text-[10px] text-slate-400">No Action Required</span>
+                  <span className="font-mono text-[10px] text-slate-400">On Schedule</span>
                 </div>
               )}
 
               <div className="flex gap-2">
                 <button
                   onClick={() => onNavigateTab('ai-predictions')}
-                  className="flex-1 min-h-[38px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1 cursor-pointer"
+                  className="flex-1 min-h-[38px] bg-sky-50 hover:bg-sky-100 text-sky-800 px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1 cursor-pointer"
                 >
                   <BrainCircuit className="w-3.5 h-3.5" />
-                  <span>Full AI Model View</span>
+                  <span>Arrival Forecast</span>
                 </button>
 
                 <button
-                  onClick={() => onNavigateTab('recommendations')}
-                  className="flex-1 min-h-[38px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1 cursor-pointer"
+                  onClick={() => onNavigateTab('live-monitoring')}
+                  className="flex-1 min-h-[38px] bg-sky-50 hover:bg-sky-100 text-sky-800 px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1 cursor-pointer"
                 >
-                  <span>Fleet Actions</span>
+                  <span>Live Tracking</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -726,11 +642,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
-      {/* CORE FEATURE E: FEATURE IMPORTANCE VISUAL CHART */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+      {/* FEATURE IMPORTANCE VISUAL CHART */}
+      <div className="bg-white rounded-3xl border border-sky-100 p-5 sm:p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-sky-100/80">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-purple-50 text-purple-700">
+            <div className="p-2 rounded-xl bg-purple-50 text-purple-700">
               <BarChart2 className="w-4 h-4" />
             </div>
             <div>
@@ -738,7 +654,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 AI Prediction Feature Importance (Model Weights)
               </h3>
               <p className="text-[11px] text-slate-500">
-                Random Forest feature attribution weights trained on NRIIT historical transit patterns
+                Random Forest feature attribution weights trained on historical transit patterns
               </p>
             </div>
           </div>
@@ -749,92 +665,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs">
           {featureImportances.map((item, idx) => (
-            <div key={idx} className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
+            <div key={idx} className="bg-sky-50/30 p-3 rounded-xl border border-sky-100 space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-slate-800">{item.name}</span>
                 <span className="font-mono font-extrabold text-purple-700">{item.weight}%</span>
               </div>
               <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-full transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-sky-500 via-blue-500 to-purple-600 rounded-full transition-all duration-500"
                   style={{ width: `${item.weight}%` }}
                 />
               </div>
               <p className="text-[11px] text-slate-500 italic">{item.desc}</p>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* CORE FEATURE D: ATTENDANCE DEMAND SIMULATOR */}
-      <AttendanceSimulator
-        currentAttendance={currentAttendance}
-        onSimulate={onSimulateAttendance}
-        predictedDemand={activeRoute.predictedPassengers}
-        capacity={activeRoute.capacity}
-        riskLevel={activeRoute.riskLevel}
-      />
-
-      {/* Attendance-to-Transit Decision Flow */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 font-['Outfit']">
-              Attendance-to-Transit AI Pipeline
-            </h3>
-            <p className="text-[11px] text-slate-500">
-              How classroom attendance feeds into predictive transit dispatching at NRIIT
-            </p>
-          </div>
-          <span className="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
-            Closed-Loop Flow
-          </span>
-        </div>
-
-        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 text-center text-xs overflow-x-auto touch-scroll pb-1">
-          <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 min-w-[100px]">
-            <span className="text-[10px] font-bold text-slate-400">STEP 1</span>
-            <p className="font-extrabold text-blue-700 mt-1">ATTENDANCE</p>
-            <p className="text-[10px] text-slate-500 mt-0.5">{currentAttendance}% Present</p>
-          </div>
-
-          <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 min-w-[100px]">
-            <span className="text-[10px] font-bold text-slate-400">STEP 2</span>
-            <p className="font-extrabold text-indigo-700 mt-1">STUDENT COUNT</p>
-            <p className="text-[10px] text-slate-500 mt-0.5">{Math.round((currentAttendance / 100) * 1200)} Commuters</p>
-          </div>
-
-          <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 min-w-[100px]">
-            <span className="text-[10px] font-bold text-slate-400">STEP 3</span>
-            <p className="font-extrabold text-purple-700 mt-1">ML DEMAND</p>
-            <p className="text-[10px] text-slate-500 mt-0.5">Scikit RF (R² 0.95)</p>
-          </div>
-
-          <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 min-w-[100px]">
-            <span className="text-[10px] font-bold text-slate-400">STEP 4</span>
-            <p className="font-extrabold text-slate-800 mt-1">ROUTE DEMAND</p>
-            <p className="text-[10px] text-slate-500 mt-0.5">{activeRoute.predictedPassengers} on R{activeRoute.routeNumber}</p>
-          </div>
-
-          <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 min-w-[100px]">
-            <span className="text-[10px] font-bold text-slate-400">STEP 5</span>
-            <p className="font-extrabold text-slate-800 mt-1">BUS CAPACITY</p>
-            <p className="text-[10px] text-slate-500 mt-0.5">{activeRoute.capacity} Available</p>
-          </div>
-
-          <div className={`p-2.5 rounded-xl border min-w-[100px] ${
-            isOvercrowded ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-200'
-          }`}>
-            <span className={`text-[10px] font-bold ${isOvercrowded ? 'text-red-500' : 'text-slate-400'}`}>STEP 6</span>
-            <p className={`font-extrabold mt-1 ${isOvercrowded ? 'text-red-700' : 'text-emerald-700'}`}>RISK LEVEL</p>
-            <p className="text-[10px] text-slate-500 mt-0.5">{activeRoute.predictedOccupancy}% Occupancy</p>
-          </div>
-
-          <div className="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200 min-w-[100px]">
-            <span className="text-[10px] font-bold text-emerald-600">STEP 7</span>
-            <p className="font-extrabold text-emerald-800 mt-1">ACTION</p>
-            <p className="text-[10px] text-emerald-700 mt-0.5">Deploy Standby</p>
-          </div>
         </div>
       </div>
 
@@ -846,7 +690,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </h3>
           <button
             onClick={() => onNavigateTab('live-monitoring')}
-            className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 self-start sm:self-auto min-h-[36px] cursor-pointer"
+            className="text-xs font-semibold text-sky-600 hover:text-sky-800 flex items-center gap-1 self-start sm:self-auto min-h-[36px] cursor-pointer"
           >
             <span>Full Screen Monitoring</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -855,12 +699,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <InteractiveMap route={activeRoute} allRoutes={routes} />
       </div>
 
-      {/* CORE FEATURE F: ALL ACTIVE ROUTES OVERVIEW */}
+      {/* ALL ACTIVE ROUTES OVERVIEW */}
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h3 className="text-base font-bold text-slate-900 font-['Outfit']">
-              Active Transit Corridors (Route-First Fleet Architecture)
+              Active Transit Corridors
             </h3>
             <p className="text-xs text-slate-500">
               Click any route to switch the AI demand forecast and inspect upcoming stop queues.
@@ -868,7 +712,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
           <button
             onClick={() => onNavigateTab('routes')}
-            className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-semibold transition self-start sm:self-auto min-h-[36px] flex items-center cursor-pointer"
+            className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-800 px-3 py-1.5 rounded-lg font-semibold transition self-start sm:self-auto min-h-[36px] flex items-center cursor-pointer border border-sky-100"
           >
             Manage Routes
           </button>
@@ -881,26 +725,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div
                 key={r.id}
                 onClick={() => setSelectedRouteId(r.id)}
-                className={`bg-white rounded-xl border p-4 shadow-xs transition hover:shadow-md cursor-pointer ${
+                className={`bg-white rounded-2xl border p-4 shadow-xs transition hover:shadow-md cursor-pointer ${
                   isSelected 
-                    ? 'ring-2 ring-blue-600 border-blue-400' 
-                    : r.riskLevel === 'HIGH' 
-                    ? 'border-red-300 ring-1 ring-red-200' 
-                    : 'border-slate-200'
+                    ? 'ring-2 ring-sky-500 border-sky-400 bg-sky-50/20' 
+                    : 'border-sky-100'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-400 uppercase">Route {r.routeNumber}</span>
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                      r.riskLevel === 'HIGH'
-                        ? 'bg-red-100 text-red-700'
-                        : r.riskLevel === 'MODERATE'
-                        ? 'bg-amber-100 text-amber-700'
-                        : 'bg-emerald-100 text-emerald-700'
-                    }`}
-                  >
-                    {r.riskLevel} RISK
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-200">
+                    {r.etaMinutes} mins ETA
                   </span>
                 </div>
 
@@ -908,18 +742,18 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <p className="text-[11px] text-slate-500 truncate">{r.assignedVehicle}</p>
 
                 <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                  <div className="bg-slate-50 p-2 rounded-lg">
+                  <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
                     <span className="text-[10px] text-slate-400">Current Load</span>
                     <p className="font-bold text-slate-800 font-mono mt-0.5">
                       {r.currentPassengers} / {r.capacity} ({Math.round((r.currentPassengers / r.capacity) * 100)}%)
                     </p>
                   </div>
 
-                  <div className={`p-2 rounded-lg ${r.riskLevel === 'HIGH' ? 'bg-red-50' : 'bg-slate-50'}`}>
-                    <span className={`text-[10px] ${r.riskLevel === 'HIGH' ? 'text-red-700 font-bold' : 'text-slate-400'}`}>
+                  <div className="p-2 rounded-xl bg-sky-50/50 border border-sky-100">
+                    <span className="text-[10px] text-sky-700 font-bold">
                       AI Predicted
                     </span>
-                    <p className={`font-bold font-mono mt-0.5 ${r.riskLevel === 'HIGH' ? 'text-red-700' : 'text-slate-800'}`}>
+                    <p className="font-bold font-mono mt-0.5 text-slate-800">
                       {r.predictedPassengers} ({r.predictedOccupancy}%)
                     </p>
                   </div>
@@ -927,7 +761,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                 <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
                   <span className="text-slate-500">Next: <strong className="text-slate-800">{r.nextStop}</strong></span>
-                  <span className="text-blue-600 font-semibold font-mono">{r.etaMinutes} mins ETA</span>
+                  <span className="text-sky-600 font-semibold font-mono">{r.etaMinutes} mins ETA</span>
                 </div>
               </div>
             );
@@ -937,3 +771,5 @@ export const Dashboard: React.FC<DashboardProps> = ({
     </div>
   );
 };
+
+export default Dashboard;
