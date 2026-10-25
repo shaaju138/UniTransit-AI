@@ -2,11 +2,14 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
+// Detect platform: Vercel automatically sets VERCEL=1 during all deployment builds.
+const isVercel = Boolean(process.env.VERCEL) || process.env.BUILD_TARGET === 'vercel';
+
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/UniTransit-AI/',
+  base: isVercel ? '/' : '/UniTransit-AI/',
   build: {
-    outDir: '../docs',
+    outDir: isVercel ? 'dist' : '../docs',
     emptyOutDir: true,
   },
   plugins: [
