@@ -2,7 +2,15 @@ import { RouteItem, AttendanceSession, Recommendation, AIAlert, Vehicle, College
 import { INITIAL_ROUTES, INITIAL_SESSIONS, INITIAL_RECOMMENDATIONS, INITIAL_ALERTS, INITIAL_VEHICLES, INITIAL_COLLEGES } from '../data/mockData';
 import { supabase, isSupabaseConfigured } from './supabase';
 
-const BASE_URL = '/api';
+// API Base URL resolution:
+// In production (Vercel / Render), uses import.meta.env.VITE_API_URL if configured.
+// In local development, falls back to '/api' which is proxied to http://localhost:5000 by Vite.
+const rawApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
+const BASE_URL = rawApiUrl
+  ? (rawApiUrl.replace(/\/+$/, '').endsWith('/api')
+      ? rawApiUrl.replace(/\/+$/, '')
+      : `${rawApiUrl.replace(/\/+$/, '')}/api`)
+  : '/api';
 
 function getAuthHeaders(extra: Record<string, string> = {}): Record<string, string> {
   const token = localStorage.getItem('nri_auth_token');
@@ -616,14 +624,18 @@ export const api = {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          this.saveSession(data.token, data.user);
-          return { success: true, user: data.user };
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await res.json();
+          if (res.ok && data.success) {
+            this.saveSession(data.token, data.user);
+            return { success: true, user: data.user };
+          }
+          return { success: false, error: data.error || 'Registration failed.' };
         }
-        return { success: false, error: data.error || 'Registration failed.' };
+        return { success: false, error: `Backend returned unexpected response (${res.status}). Verify your backend URL.` };
       } catch (err: any) {
-        return { success: false, error: 'Could not connect to authentication server. Please check backend.' };
+        return { success: false, error: err.message ? `Could not connect to authentication server: ${err.message}` : 'Could not connect to authentication server. Please check backend.' };
       }
     },
 
@@ -634,13 +646,16 @@ export const api = {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ identifier, email: identifier, password })
         });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          this.saveSession(data.token, data.user);
-          return { success: true, user: data.user };
-        }
-        if (data && data.error) {
-          return { success: false, error: data.error };
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await res.json();
+          if (res.ok && data.success) {
+            this.saveSession(data.token, data.user);
+            return { success: true, user: data.user };
+          }
+          if (data && data.error) {
+            return { success: false, error: data.error };
+          }
         }
       } catch (err: any) {
         console.warn('Backend login connection issue, checking offline demo accounts:', err.message);

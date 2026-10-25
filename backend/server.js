@@ -7,11 +7,54 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// Permissive CORS configuration supporting deployed Vercel frontend, GitHub Pages, and local development
+app.use(cors({
+  origin: (origin, callback) => {
+    // Dynamically allow requesting origin for web clients, and allow requests with no origin (curl, mobile, server-to-server)
+    callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+app.options('*', cors());
 app.use(express.json());
 
+// Root health check endpoints for Render cloud monitoring & browser checks
+app.get('/', (req, res) => {
+  res.json({
+    status: 'healthy',
+    system: 'TransitIQ API',
+    service: 'Express REST Backend',
+    version: '1.0.0-hackathon',
+    port: PORT,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // In-memory state initialized from seed data
-const DB_DIR = path.join(__dirname, '..', 'database');
+const DB_DIR = fs.existsSync(path.join(__dirname, '..', 'database'))
+  ? path.join(__dirname, '..', 'database')
+  : (fs.existsSync(path.join(__dirname, 'database'))
+      ? path.join(__dirname, 'database')
+      : path.join(process.cwd(), 'database'));
+
+function ensureDbDir() {
+  if (!fs.existsSync(DB_DIR)) {
+    try {
+      fs.mkdirSync(DB_DIR, { recursive: true });
+    } catch (err) {
+      console.warn('Could not create DB_DIR:', err.message);
+    }
+  }
+}
 
 function loadJson(file, fallback) {
   try {
@@ -35,6 +78,7 @@ let boardingRecords = loadJson('boarding_records.json', []);
 
 function saveUsers() {
   try {
+    ensureDbDir();
     fs.writeFileSync(path.join(DB_DIR, 'users.json'), JSON.stringify(users, null, 2), 'utf8');
   } catch (err) {
     console.error('Error saving users.json:', err.message);
@@ -43,6 +87,7 @@ function saveUsers() {
 
 function saveBoardingRecords() {
   try {
+    ensureDbDir();
     fs.writeFileSync(path.join(DB_DIR, 'boarding_records.json'), JSON.stringify(boardingRecords, null, 2), 'utf8');
   } catch (err) {
     console.error('Error saving boarding_records.json:', err.message);
@@ -51,6 +96,7 @@ function saveBoardingRecords() {
 
 function saveVehicles() {
   try {
+    ensureDbDir();
     fs.writeFileSync(path.join(DB_DIR, 'vehicles.json'), JSON.stringify(vehicles, null, 2), 'utf8');
   } catch (err) {
     console.error('Error saving vehicles.json:', err.message);
@@ -59,6 +105,7 @@ function saveVehicles() {
 
 function saveRoutes() {
   try {
+    ensureDbDir();
     fs.writeFileSync(path.join(DB_DIR, 'routes.json'), JSON.stringify(routes, null, 2), 'utf8');
   } catch (err) {
     console.error('Error saving routes.json:', err.message);
@@ -88,6 +135,7 @@ const activeSessions = loadSessions();
 
 function saveSessions() {
   try {
+    ensureDbDir();
     const obj = {};
     const now = Date.now();
     for (const [k, v] of activeSessions.entries()) {

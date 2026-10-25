@@ -10,7 +10,7 @@ export default defineConfig({
   base: isVercel ? '/' : '/UniTransit-AI/',
   build: {
     outDir: isVercel ? 'dist' : '../docs',
-    emptyOutDir: true,
+    emptyOutDir: isVercel,
   },
   plugins: [
     react(),
