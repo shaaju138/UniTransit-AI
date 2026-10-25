@@ -2,30 +2,86 @@
   {
     "id": "route-1",
     "routeNumber": 1,
-    "name": "Route 1 — Mangalagiri to NRIIT",
-    "slug": "mangalagiri-nriit",
+    "name": "Route 1 — Mangalagiri Corridor",
+    "slug": "mangalagiri-corridor",
     "collegeId": "nriit-pilot",
-    "origin": "NRI Institute of Technology (Pothavarappadu)",
+    "origin": "Central Transit Terminal",
     "destination": "Mangalagiri Bus Complex",
-    "assignedVehicle": "Assigned Vehicle A (Demo Bus)",
+    "assignedVehicle": "Bus 31",
     "capacity": 50,
-    "currentPassengers": 43,
+    "currentPassengers": 27,
     "predictedPassengers": 58,
-    "predictedOccupancy": 116,
-    "riskLevel": "HIGH",
+    "predictedOccupancy": 54,
+    "riskLevel": "SAFE",
     "status": "In Transit",
     "currentLocation": "Approaching Chinna Kakani",
     "nextStop": "Chinna Kakani",
     "etaMinutes": 6,
     "stops": [
-      { "id": "r1-s1", "name": "NRI Institute of Technology", "km": 0, "demand": 0, "lat": 16.5815, "lng": 80.7384 },
-      { "id": "r1-s2", "name": "Pedda Kakani", "km": 8.5, "demand": 8, "lat": 16.3450, "lng": 80.5050 },
-      { "id": "r1-s3", "name": "Numbur", "km": 12.2, "demand": 14, "lat": 16.3680, "lng": 80.5220 },
-      { "id": "r1-s4", "name": "Koppuravuru", "km": 15.0, "demand": 21, "lat": 16.3910, "lng": 80.5400 },
-      { "id": "r1-s5", "name": "Kaza", "km": 18.4, "demand": 28, "lat": 16.4258, "lng": 80.5620 },
-      { "id": "r1-s6", "name": "Chinna Kakani", "km": 21.0, "demand": 35, "lat": 16.4390, "lng": 80.5690 },
-      { "id": "r1-s7", "name": "Tenali Bypass", "km": 24.3, "demand": 18, "lat": 16.4350, "lng": 80.5820 },
-      { "id": "r1-s8", "name": "Mangalagiri", "km": 28.0, "demand": 12, "lat": 16.4300, "lng": 80.5650 }
+      {
+        "id": "r1-s1",
+        "name": "Central Transit Terminal",
+        "km": 0,
+        "demand": 0,
+        "lat": 16.5815,
+        "lng": 80.7384
+      },
+      {
+        "id": "r1-s2",
+        "name": "Pedda Kakani",
+        "km": 8.5,
+        "demand": 8,
+        "lat": 16.345,
+        "lng": 80.505
+      },
+      {
+        "id": "r1-s3",
+        "name": "Numbur",
+        "km": 12.2,
+        "demand": 14,
+        "lat": 16.368,
+        "lng": 80.522
+      },
+      {
+        "id": "r1-s4",
+        "name": "Koppuravuru",
+        "km": 15,
+        "demand": 21,
+        "lat": 16.391,
+        "lng": 80.54
+      },
+      {
+        "id": "r1-s5",
+        "name": "Kaza",
+        "km": 18.4,
+        "demand": 28,
+        "lat": 16.4258,
+        "lng": 80.562
+      },
+      {
+        "id": "r1-s6",
+        "name": "Chinna Kakani",
+        "km": 21,
+        "demand": 35,
+        "lat": 16.439,
+        "lng": 80.569
+      },
+      {
+        "id": "r1-s7",
+        "name": "Tenali Bypass",
+        "km": 24.3,
+        "demand": 18,
+        "lat": 16.435,
+        "lng": 80.582
+      },
+      {
+        "id": "r1-s8",
+        "name": "Mangalagiri",
+        "km": 28,
+        "demand": 12,
+        "lat": 16.43,
+        "lng": 80.565
+      }
     ],
     "explanation": "Passenger demand is expected to exceed available capacity based on current occupancy (86%), historical morning peak travel, high attendance in CSE/ECE (94%), and 63 students waiting across upcoming stops (notably Kaza and Chinna Kakani).",
     "recommendation": "Deploy standby Assigned Vehicle D or reallocate available 20-seat capacity from low-demand Route 3."
@@ -33,12 +89,12 @@
   {
     "id": "route-2",
     "routeNumber": 2,
-    "name": "Route 2 — Vijayawada Benz Circle to NRIIT",
-    "slug": "benz-circle-nriit",
+    "name": "Route 2 — Vijayawada Benz Circle Corridor",
+    "slug": "benz-circle-corridor",
     "collegeId": "nriit-pilot",
-    "origin": "NRI Institute of Technology (Pothavarappadu)",
+    "origin": "Central Transit Terminal",
     "destination": "Benz Circle, Vijayawada",
-    "assignedVehicle": "Assigned Vehicle B (Demo Bus)",
+    "assignedVehicle": "Bus 32",
     "capacity": 55,
     "currentPassengers": 38,
     "predictedPassengers": 44,
@@ -49,12 +105,54 @@
     "nextStop": "Ramavarappadu Ring",
     "etaMinutes": 8,
     "stops": [
-      { "id": "r2-s1", "name": "NRI Institute of Technology", "km": 0, "demand": 0, "lat": 16.5815, "lng": 80.7384 },
-      { "id": "r2-s2", "name": "Nunna Village", "km": 4.1, "demand": 6, "lat": 16.5650, "lng": 80.7020 },
-      { "id": "r2-s3", "name": "Kandrika", "km": 8.0, "demand": 11, "lat": 16.5410, "lng": 80.6690 },
-      { "id": "r2-s4", "name": "Gunadala", "km": 12.3, "demand": 15, "lat": 16.5180, "lng": 80.6550 },
-      { "id": "r2-s5", "name": "Ramavarappadu Ring", "km": 14.5, "demand": 19, "lat": 16.5120, "lng": 80.6620 },
-      { "id": "r2-s6", "name": "Benz Circle", "km": 18.2, "demand": 14, "lat": 16.4990, "lng": 80.6510 }
+      {
+        "id": "r2-s1",
+        "name": "Central Transit Terminal",
+        "km": 0,
+        "demand": 0,
+        "lat": 16.5815,
+        "lng": 80.7384
+      },
+      {
+        "id": "r2-s2",
+        "name": "Nunna Village",
+        "km": 4.1,
+        "demand": 6,
+        "lat": 16.565,
+        "lng": 80.702
+      },
+      {
+        "id": "r2-s3",
+        "name": "Kandrika",
+        "km": 8,
+        "demand": 11,
+        "lat": 16.541,
+        "lng": 80.669
+      },
+      {
+        "id": "r2-s4",
+        "name": "Gunadala",
+        "km": 12.3,
+        "demand": 15,
+        "lat": 16.518,
+        "lng": 80.655
+      },
+      {
+        "id": "r2-s5",
+        "name": "Ramavarappadu Ring",
+        "km": 14.5,
+        "demand": 19,
+        "lat": 16.512,
+        "lng": 80.662
+      },
+      {
+        "id": "r2-s6",
+        "name": "Benz Circle",
+        "km": 18.2,
+        "demand": 14,
+        "lat": 16.499,
+        "lng": 80.651
+      }
     ],
     "explanation": "Current occupancy is within safe operational limits (69%). Forecasted passenger influx at Ramavarappadu will bring utilization to 80%, maintaining comfortable safety margins.",
     "recommendation": "Maintain standard dispatch timetable; monitor Ramavarappadu boarding via simulated live telemetry."
@@ -62,28 +160,70 @@
   {
     "id": "route-3",
     "routeNumber": 3,
-    "name": "Route 3 — Gannavaram Airport Corridor to NRIIT",
-    "slug": "gannavaram-nriit",
+    "name": "Route 3 — Gannavaram Airport Corridor",
+    "slug": "gannavaram-corridor",
     "collegeId": "nriit-pilot",
-    "origin": "NRI Institute of Technology (Pothavarappadu)",
+    "origin": "Central Transit Terminal",
     "destination": "Gannavaram Bus Stand",
-    "assignedVehicle": "Assigned Vehicle C (Demo Bus)",
+    "assignedVehicle": "Bus 33",
     "capacity": 45,
-    "currentPassengers": 19,
+    "currentPassengers": 20,
     "predictedPassengers": 22,
-    "predictedOccupancy": 49,
+    "predictedOccupancy": 44,
     "riskLevel": "SAFE",
     "status": "In Transit",
     "currentLocation": "Enikepadu Junction",
     "nextStop": "Kesarapalle",
     "etaMinutes": 11,
     "stops": [
-      { "id": "r3-s1", "name": "NRI Institute of Technology", "km": 0, "demand": 0, "lat": 16.5815, "lng": 80.7384 },
-      { "id": "r3-s2", "name": "Nunna Road Cut", "km": 3.5, "demand": 3, "lat": 16.5700, "lng": 80.7100 },
-      { "id": "r3-s3", "name": "Enikepadu Junction", "km": 8.9, "demand": 7, "lat": 16.5300, "lng": 80.7100 },
-      { "id": "r3-s4", "name": "Prasadampadu", "km": 11.2, "demand": 5, "lat": 16.5200, "lng": 80.7000 },
-      { "id": "r3-s5", "name": "Kesarapalle", "km": 16.0, "demand": 8, "lat": 16.5380, "lng": 80.7720 },
-      { "id": "r3-s6", "name": "Gannavaram Hub", "km": 20.4, "demand": 6, "lat": 16.5410, "lng": 80.8010 }
+      {
+        "id": "r3-s1",
+        "name": "Central Transit Terminal",
+        "km": 0,
+        "demand": 0,
+        "lat": 16.5815,
+        "lng": 80.7384
+      },
+      {
+        "id": "r3-s2",
+        "name": "Nunna Road Cut",
+        "km": 3.5,
+        "demand": 3,
+        "lat": 16.57,
+        "lng": 80.71
+      },
+      {
+        "id": "r3-s3",
+        "name": "Enikepadu Junction",
+        "km": 8.9,
+        "demand": 7,
+        "lat": 16.53,
+        "lng": 80.71
+      },
+      {
+        "id": "r3-s4",
+        "name": "Prasadampadu",
+        "km": 11.2,
+        "demand": 5,
+        "lat": 16.52,
+        "lng": 80.7
+      },
+      {
+        "id": "r3-s5",
+        "name": "Kesarapalle",
+        "km": 16,
+        "demand": 8,
+        "lat": 16.538,
+        "lng": 80.772
+      },
+      {
+        "id": "r3-s6",
+        "name": "Gannavaram Hub",
+        "km": 20.4,
+        "demand": 6,
+        "lat": 16.541,
+        "lng": 80.801
+      }
     ],
     "explanation": "Route occupancy is low (42% current, 49% predicted). Ample spare capacity of 23 seats is available.",
     "recommendation": "Vehicle capacity can be partially reassigned or standby shuttle can be redirected to assist Route 1 if demand surges further."

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "brd-1792919130209-jcvs2",
+    "studentId": "usr-1792914938877-lj357",
+    "rollNumber": "25KN1A12C2",
+    "studentName": "Venkat Gowtham Updated",
+    "department": "CSE",
+    "busId": "veh-demo-a",
+    "busNumber": "Bus 31",
+    "routeId": "route-1",
+    "routeName": "Route 1 — Mangalagiri Corridor",
+    "boardingTimestamp": "2026-10-25T09:05:30.209Z",
+    "status": "Boarded",
+    "method": "PIN"
+  },
+  {
+    "id": "brd-1792917798428-ee6w5",
+    "studentId": "usr-1792911833747-6ekgr",
+    "rollNumber": "25KN1A12",
+    "studentName": "gowtham",
+    "department": "CSE",
+    "busId": "veh-demo-a",
+    "busNumber": "Bus 31",
+    "routeId": "route-1",
+    "routeName": "Route 1 — Mangalagiri Corridor",
+    "boardingTimestamp": "2026-10-25T08:43:18.429Z",
+    "status": "Boarded",
+    "method": "MANUAL"
+  },
+  {
+    "id": "brd-1792907331889-acep2",
+    "studentId": "usr-1792905178500-fpt5m",
+    "rollNumber": "21NR1A6919",
+    "studentName": "shaajani",
+    "department": "CSE",
+    "busId": "veh-demo-c",
+    "busNumber": "Bus 33",
+    "routeId": "route-3",
+    "routeName": "Route 3 — Gannavaram Airport Corridor to NRIIT",
+    "boardingTimestamp": "2026-10-25T05:48:51.889Z",
+    "status": "Boarded",
+    "method": "QR_CODE"
+  },
+  {
+    "id": "brd-1792906926983-kbim0",
+    "studentId": "usr-student-31",
+    "rollNumber": "31",
+    "studentName": "Shaaji",
+    "department": "CSE",
+    "busId": "veh-demo-a",
+    "busNumber": "Bus 31",
+    "routeId": "route-1",
+    "routeName": "Route 1 — Mangalagiri to NRIIT",
+    "boardingTimestamp": "2026-10-25T05:42:06.983Z",
+    "status": "Boarded",
+    "method": "MANUAL"
+  }
+]

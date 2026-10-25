@@ -52,6 +52,7 @@ export interface RouteItem {
 
 export interface Vehicle {
   id: string;
+  busNumber?: string;
   name: string;
   plateDemo: string;
   assignedRouteId: string | null;
@@ -63,6 +64,7 @@ export interface Vehicle {
   phoneDemo: string;
   speedKmph: number;
   currentLocation: string;
+  boardingPin?: string;
   simulatedCoordinates: { lat: number; lng: number };
   lastPing: string;
 }
@@ -149,3 +151,33 @@ export interface Recommendation {
 }
 
 export type UserRole = 'ADMIN' | 'FACULTY' | 'STUDENT';
+
+export interface BoardingRecord {
+  id: string;
+  studentId: string;
+  rollNumber: string;
+  studentName: string;
+  department?: string;
+  busId: string;
+  busNumber: string;
+  routeId?: string;
+  routeName?: string;
+  boardingTimestamp: string;
+  status: 'Boarded' | 'Not Boarded';
+  method: 'QR_CODE' | 'MANUAL' | 'PIN';
+}
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  fullName: string;
+  role: UserRole;
+  department?: string;
+  rollNumber?: string;
+  year?: string;
+  section?: string;
+  busStop?: string;
+  assignedBus?: string;
+  phoneNumber?: string;
+  phone?: string;
+}

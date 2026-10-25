@@ -26,7 +26,7 @@ export const INITIAL_ROUTES: RouteItem[] = [
     collegeId: "nriit-pilot",
     origin: "NRI Institute of Technology (Pothavarappadu)",
     destination: "Mangalagiri Bus Complex",
-    assignedVehicle: "Assigned Vehicle A (Transit Fleet)",
+    assignedVehicle: "Bus 31",
     assignedVehicleId: "veh-demo-a",
     capacity: 50,
     currentPassengers: 43,
@@ -48,7 +48,7 @@ export const INITIAL_ROUTES: RouteItem[] = [
       { id: "r1-s8", name: "Mangalagiri", km: 28.0, demand: 12, waitingStudents: 12, predictedAddition: 4, lat: 16.4300, lng: 80.5650 }
     ],
     explanation: "Passenger demand is expected to exceed available capacity based on current occupancy (86%), historical route demand, high morning attendance (94%) and 63 students waiting at upcoming stops (notably Kaza and Chinna Kakani).",
-    recommendation: "Deploy standby Assigned Vehicle D or reallocate available capacity from low-demand Route 3."
+    recommendation: "Deploy standby Bus 34 or reallocate available capacity from low-demand Route 3."
   },
   {
     id: "route-2",
@@ -58,7 +58,7 @@ export const INITIAL_ROUTES: RouteItem[] = [
     collegeId: "nriit-pilot",
     origin: "NRI Institute of Technology (Pothavarappadu)",
     destination: "Benz Circle, Vijayawada",
-    assignedVehicle: "Assigned Vehicle B (Transit Fleet)",
+    assignedVehicle: "Bus 32",
     assignedVehicleId: "veh-demo-b",
     capacity: 55,
     currentPassengers: 38,
@@ -88,7 +88,7 @@ export const INITIAL_ROUTES: RouteItem[] = [
     collegeId: "nriit-pilot",
     origin: "NRI Institute of Technology (Pothavarappadu)",
     destination: "Gannavaram Bus Stand",
-    assignedVehicle: "Assigned Vehicle C (Transit Fleet)",
+    assignedVehicle: "Bus 33",
     assignedVehicleId: "veh-demo-c",
     capacity: 45,
     currentPassengers: 19,
@@ -115,7 +115,8 @@ export const INITIAL_ROUTES: RouteItem[] = [
 export const INITIAL_VEHICLES: Vehicle[] = [
   {
     id: "veh-demo-a",
-    name: "Assigned Vehicle A",
+    busNumber: "Bus 31",
+    name: "Bus 31",
     plateDemo: "AP 16 TX 101",
     assignedRouteId: "route-1",
     routeNumber: 1,
@@ -131,7 +132,8 @@ export const INITIAL_VEHICLES: Vehicle[] = [
   },
   {
     id: "veh-demo-b",
-    name: "Assigned Vehicle B",
+    busNumber: "Bus 32",
+    name: "Bus 32",
     plateDemo: "AP 16 TX 102",
     assignedRouteId: "route-2",
     routeNumber: 2,
@@ -147,7 +149,8 @@ export const INITIAL_VEHICLES: Vehicle[] = [
   },
   {
     id: "veh-demo-c",
-    name: "Assigned Vehicle C",
+    busNumber: "Bus 33",
+    name: "Bus 33",
     plateDemo: "AP 16 TX 103",
     assignedRouteId: "route-3",
     routeNumber: 3,
@@ -163,7 +166,8 @@ export const INITIAL_VEHICLES: Vehicle[] = [
   },
   {
     id: "veh-demo-d",
-    name: "Assigned Standby Vehicle D",
+    busNumber: "Bus 34",
+    name: "Bus 34",
     plateDemo: "AP 16 TX 104",
     assignedRouteId: null,
     routeNumber: null,

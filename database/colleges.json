@@ -1,10 +1,10 @@
 [
   {
     "id": "nriit-pilot",
-    "name": "NRI Institute of Technology",
-    "shortName": "NRIIT",
-    "tagline": "AI-Powered Campus Mobility & Overcrowding Management",
-    "address": "Pothavarappadu, Via Nunna, Vijayawada, Andhra Pradesh - 521212",
+    "name": "TransitIQ Smart Transit Network",
+    "shortName": "TransitIQ",
+    "tagline": "AI-Powered Smart Transit Management",
+    "address": "Central Transit Terminal, Vijayawada Mobility Hub, Andhra Pradesh",
     "coordinates": { "lat": 16.5815, "lng": 80.7384 },
     "isPilot": true,
     "departments": ["CSE", "ECE", "IT", "AIML", "DS", "MECH", "CIVIL", "EEE"],

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { RouteItem } from '../types';
 import { InteractiveMap } from '../components/InteractiveMap';
+import { useLiveTracking } from '../services/trackingService';
 import { 
   Bus, 
   MapPin, 
@@ -22,6 +23,18 @@ interface LiveMonitoringProps {
 export const LiveMonitoring: React.FC<LiveMonitoringProps> = ({ routes }) => {
   const [selectedRouteId, setSelectedRouteId] = useState<string>('route-1');
   const activeRoute = routes.find(r => r.id === selectedRouteId) || routes[0];
+  const { bus31, otherBuses } = useLiveTracking();
+
+  const isBus31 = activeRoute.routeNumber === 1 || activeRoute.id === 'route-1' || activeRoute.assignedVehicle === 'Bus 31';
+  const assignedBusNumber = isBus31 ? 'Bus 31' : `Bus ${30 + (activeRoute.routeNumber || 1)}`;
+
+  const displayLocation = isBus31 
+    ? bus31.statusDescription 
+    : 'Stationary / Not currently tracked (Demo Mode Active for Bus 31 Only)';
+
+  const displayNextStop = isBus31 ? bus31.nextStopName : (activeRoute.nextStop || 'Station Standby');
+  const displayEta = isBus31 ? bus31.etaMinutes : activeRoute.etaMinutes;
+  const displaySpeed = isBus31 ? `${bus31.speedKmph} km/h` : '0 km/h (GPS Inactive)';
 
   return (
     <div className="space-y-6">
@@ -33,25 +46,25 @@ export const LiveMonitoring: React.FC<LiveMonitoringProps> = ({ routes }) => {
               Live Bus Monitoring & Telemetry
             </h1>
             <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-emerald-200">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-              Live GPS Simulation
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              SIMULATED LIVE TRACKING — Demo Mode
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            Real-time simulated telemetry for NRIIT campus fleet across Vijayawada-Guntur transit routes.
+            Real-time simulated telemetry for TransitIQ fleet across regional transit routes.
           </p>
         </div>
 
         {/* Route Selector Pills */}
-        <div className="flex items-center bg-white p-1 rounded-xl border border-slate-200 shadow-xs overflow-x-auto max-w-full touch-scroll">
+        <div className="flex items-center bg-sky-50/80 p-1 rounded-xl border border-sky-100 shadow-xs overflow-x-auto max-w-full touch-scroll">
           {routes.map((r) => (
             <button
               key={r.id}
               onClick={() => setSelectedRouteId(r.id)}
-              className={`text-xs px-3.5 py-2 min-h-[44px] rounded-lg font-bold transition whitespace-nowrap flex items-center justify-center ${
+              className={`text-xs px-3.5 py-2 min-h-[44px] rounded-lg font-bold transition whitespace-nowrap flex items-center justify-center cursor-pointer ${
                 r.id === activeRoute.id
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  ? 'bg-sky-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-sky-900 hover:bg-white'
               }`}
             >
               Route {r.routeNumber}
@@ -78,15 +91,22 @@ export const LiveMonitoring: React.FC<LiveMonitoringProps> = ({ routes }) => {
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-bold text-slate-900">{activeRoute.name}</span>
               <span className="text-xs bg-white text-slate-700 px-2 py-0.5 rounded font-mono border border-slate-200">
-                {activeRoute.assignedVehicle}
+                {assignedBusNumber}
+              </span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                isBus31 
+                  ? (bus31.isMoving ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300') 
+                  : 'bg-slate-100 text-slate-600 border-slate-300'
+              }`}>
+                {isBus31 ? (bus31.isMoving ? 'Moving in Demo Mode' : `Stopped (${bus31.dwellRemainingSeconds}s)`) : 'Not currently tracked'}
               </span>
             </div>
             <div className="text-xs text-slate-600 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span>Location: <strong className="text-slate-900">{activeRoute.currentLocation}</strong></span>
+              <span>Status: <strong className="text-slate-900">{displayLocation}</strong></span>
               <span>•</span>
-              <span>Next: <strong className="text-blue-700">{activeRoute.nextStop}</strong></span>
+              <span>Next: <strong className="text-blue-700">{displayNextStop}</strong></span>
               <span>•</span>
-              <span>ETA: <strong className="text-slate-900">{activeRoute.etaMinutes} mins</strong></span>
+              <span>ETA: <strong className="text-slate-900">{displayEta} mins</strong></span>
             </div>
           </div>
         </div>
@@ -124,18 +144,18 @@ export const LiveMonitoring: React.FC<LiveMonitoringProps> = ({ routes }) => {
 
       {/* Detailed Telemetry Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs min-w-0">
+        <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs min-w-0 card-hover">
           <div className="flex items-center gap-2 text-slate-500 text-xs font-medium">
-            <Gauge className="w-4 h-4 text-blue-600" />
+            <Gauge className="w-4 h-4 text-sky-600" />
             <span>Telemetry Velocity</span>
           </div>
-          <div className="mt-2 text-xl font-bold font-mono text-slate-900">38 km/h</div>
-          <p className="text-[11px] text-slate-500 mt-1">Average Highway Speed</p>
+          <div className="mt-2 text-xl font-bold font-mono text-slate-900">{displaySpeed}</div>
+          <p className="text-[11px] text-slate-500 mt-1">{isBus31 ? 'Corridor Transit Speed' : 'Stationary Vehicle'}</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs min-w-0">
+        <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs min-w-0 card-hover">
           <div className="flex items-center gap-2 text-slate-500 text-xs font-medium">
-            <Users className="w-4 h-4 text-indigo-600" />
+            <Users className="w-4 h-4 text-blue-600" />
             <span>Available Capacity</span>
           </div>
           <div className="mt-2 text-xl font-bold font-mono text-slate-900">
@@ -144,7 +164,7 @@ export const LiveMonitoring: React.FC<LiveMonitoringProps> = ({ routes }) => {
           <p className="text-[11px] text-slate-500 mt-1">Current Physical Headroom</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs min-w-0">
+        <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs min-w-0 card-hover">
           <div className="flex items-center gap-2 text-slate-500 text-xs font-medium">
             <Phone className="w-4 h-4 text-emerald-600" />
             <span>Assigned Driver Contact</span>
@@ -153,9 +173,9 @@ export const LiveMonitoring: React.FC<LiveMonitoringProps> = ({ routes }) => {
           <p className="text-[11px] text-slate-500 mt-0.5 font-mono">+91 98480 12345</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs min-w-0">
+        <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs min-w-0 card-hover">
           <div className="flex items-center gap-2 text-slate-500 text-xs font-medium">
-            <ShieldCheck className="w-4 h-4 text-purple-600" />
+            <ShieldCheck className="w-4 h-4 text-sky-600" />
             <span>AI Risk Prediction</span>
           </div>
           <div className={`mt-2 text-xl font-bold font-mono ${activeRoute.riskLevel === 'HIGH' ? 'text-red-600' : 'text-emerald-600'}`}>
@@ -168,7 +188,7 @@ export const LiveMonitoring: React.FC<LiveMonitoringProps> = ({ routes }) => {
       </div>
 
       {/* Stop Sequence Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+      <div className="bg-white rounded-2xl border border-sky-100 overflow-hidden shadow-xs">
         <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h3 className="text-sm font-bold text-slate-900 font-['Outfit']">
@@ -189,7 +209,7 @@ export const LiveMonitoring: React.FC<LiveMonitoringProps> = ({ routes }) => {
               <tr>
                 <th className="py-2.5 px-4">#</th>
                 <th className="py-2.5 px-4">Stop Name</th>
-                <th className="py-2.5 px-4">Distance from NRIIT</th>
+                <th className="py-2.5 px-4">Distance from Central Terminal</th>
                 <th className="py-2.5 px-4">Waiting Students</th>
                 <th className="py-2.5 px-4">Predicted Boarding</th>
                 <th className="py-2.5 px-4">Status</th>

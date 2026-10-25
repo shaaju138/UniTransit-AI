@@ -1,0 +1,86 @@
+[
+  {
+    "rollNumber": "31NR1A05",
+    "name": "Shaajani",
+    "email": "shaaji@nriit.edu.in",
+    "department": "CSE",
+    "year": "III",
+    "section": "A",
+    "busStop": "Benz Circle",
+    "assignedBus": "Bus 31"
+  },
+  {
+    "rollNumber": "31",
+    "name": "Shaaji",
+    "email": "shaaji@nriit.edu.in",
+    "department": "CSE",
+    "year": "III",
+    "section": "A",
+    "busStop": "Benz Circle",
+    "assignedBus": "Bus 31"
+  },
+  {
+    "rollNumber": "21NR1A0501",
+    "name": "B. Sai Teja",
+    "email": "student@nriit.edu.in",
+    "department": "CSE",
+    "year": "III",
+    "section": "A"
+  },
+  {
+    "rollNumber": "21NR1A0502",
+    "name": "Ch. Mounika",
+    "email": "mounika.21@nriit.edu.in",
+    "department": "CSE",
+    "year": "III",
+    "section": "A"
+  },
+  {
+    "rollNumber": "21NR1A0503",
+    "name": "G. Rahul Varma",
+    "email": "rahul.21@nriit.edu.in",
+    "department": "CSE",
+    "year": "III",
+    "section": "A"
+  },
+  {
+    "rollNumber": "21NR1A0415",
+    "name": "M. Divya Sri",
+    "email": "divyasri.21@nriit.edu.in",
+    "department": "ECE",
+    "year": "III",
+    "section": "B"
+  },
+  {
+    "rollNumber": "21NR1A3837",
+    "name": "R. Naveen Kumar",
+    "email": "naveen@nriit.edu.in",
+    "department": "AIML",
+    "year": "III",
+    "section": "A"
+  },
+  {
+    "rollNumber": "21NR1A4330",
+    "name": "P. Harish",
+    "email": "harish_student@nriit.edu.in",
+    "department": "CSE",
+    "year": "III",
+    "section": "A"
+  },
+  {
+    "rollNumber": "21NR1A6919",
+    "name": "Shaajani Vangaliyappan",
+    "email": "shaajanivangaliyappan@gmail.com",
+    "department": "CSE",
+    "year": "IV",
+    "section": "B"
+  },
+  {
+    "rollNumber": "21NR1A9274",
+    "name": "K. Ananya",
+    "email": "ananya.21@nriit.edu.in",
+    "department": "CSE",
+    "year": "III",
+    "section": "A"
+  }
+]

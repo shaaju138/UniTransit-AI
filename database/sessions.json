@@ -1,0 +1,128 @@
+{
+  "nri_sess_9f8114ad782c258918ec8b4d6097ab0ce01a1ca09604f16f": {
+    "userId": "usr-1792903415499-240kr",
+    "role": "STUDENT",
+    "email": "test_student_1792903415483@nriit.edu.in",
+    "expiresAt": 1793508215500
+  },
+  "nri_sess_5f8e29c97e4db46e2f82ca740314d4eb976301b037b7dcb1": {
+    "userId": "usr-student-31",
+    "role": "STUDENT",
+    "email": "shaaji@nriit.edu.in",
+    "expiresAt": 1793510893523
+  },
+  "nri_sess_24bc594e32a7ed59b05e03cfa1019955ad9f84710060c577": {
+    "userId": "usr-1792906093552-acbuj",
+    "role": "STUDENT",
+    "email": "rahul_test@nriit.edu.in",
+    "expiresAt": 1793510893554
+  },
+  "nri_sess_70223f8f4ec6130ce6f3fb23788d8e006d26ce56171ba6cc": {
+    "userId": "usr-1792914824965-10766",
+    "role": "STUDENT",
+    "email": "student_25kn_1792914824964@nriit.edu.in",
+    "expiresAt": 1793519624966
+  },
+  "nri_sess_2d384b4354a066fe87f605a946a3796c31903661b7524a4a": {
+    "userId": "usr-1792914824965-10766",
+    "role": "STUDENT",
+    "email": "student_25kn_1792914824964@nriit.edu.in",
+    "expiresAt": 1793519624975
+  },
+  "nri_sess_04f0d24bba8f40bd7b55033b45baf99f12d36b55aa131399": {
+    "userId": "usr-student-31",
+    "role": "STUDENT",
+    "email": "shaaji@nriit.edu.in",
+    "expiresAt": 1793519624985
+  },
+  "nri_sess_a2a17650ce13d7c80bf62567e3133db9f7421bda8b8a67ec": {
+    "userId": "usr-student-01",
+    "role": "STUDENT",
+    "email": "student@nriit.edu.in",
+    "expiresAt": 1793519624991
+  },
+  "nri_sess_b0020e29a0381acdd736e638772ec02a45fa2aa5528aad4d": {
+    "userId": "usr-admin-01",
+    "role": "ADMIN",
+    "email": "admin@smarttransit.com",
+    "expiresAt": 1793519624997
+  },
+  "nri_sess_4fb5a2d2ef3fbf19c36b5f84fe492a084da49ea8a6e549e0": {
+    "userId": "usr-1792914825004-bq690",
+    "role": "STUDENT",
+    "email": "student_mgl_1792914825004@nriit.edu.in",
+    "expiresAt": 1793519625005
+  },
+  "nri_sess_a5a4f170634acaca8810d0bc8424bcfec4f9fa42595cf6f1": {
+    "userId": "usr-1792914938877-lj357",
+    "role": "STUDENT",
+    "email": "student_25kn_1792914938875@nriit.edu.in",
+    "expiresAt": 1793519738879
+  },
+  "nri_sess_13e67992c6734eddc93e4fac545c699403575c340863a015": {
+    "userId": "usr-1792914938877-lj357",
+    "role": "STUDENT",
+    "email": "student_25kn_1792914938875@nriit.edu.in",
+    "expiresAt": 1793519738886
+  },
+  "nri_sess_499ba8d45a66c0c7c8620162c1636d41f416a54edbac1291": {
+    "userId": "usr-student-31",
+    "role": "STUDENT",
+    "email": "shaaji@nriit.edu.in",
+    "expiresAt": 1793519738893
+  },
+  "nri_sess_dadd13cd75f276a6f3097fef0b0cf744bd180c2b14f1696b": {
+    "userId": "usr-student-01",
+    "role": "STUDENT",
+    "email": "student@nriit.edu.in",
+    "expiresAt": 1793519738899
+  },
+  "nri_sess_1ceecf91a526943d327b4a8968acb07053636a0ecc706e17": {
+    "userId": "usr-admin-01",
+    "role": "ADMIN",
+    "email": "admin@smarttransit.com",
+    "expiresAt": 1793519738905
+  },
+  "nri_sess_49ea20b318478d5ce4d55bb49816956e2007af58f2ac091c": {
+    "userId": "usr-1792914938911-kw0hl",
+    "role": "STUDENT",
+    "email": "student_mgl_1792914938909@nriit.edu.in",
+    "expiresAt": 1793519738912
+  },
+  "nri_sess_2666e1cf312e3c33ddcf312e425a54cf5ac5e2a1c1992b40": {
+    "userId": "usr-1792914938877-lj357",
+    "role": "STUDENT",
+    "email": "student_25kn_1792914938875@nriit.edu.in",
+    "expiresAt": 1793519765073
+  },
+  "nri_sess_084c23b2c88a0a026b64cff97dcbcd656f3c926c77096569": {
+    "userId": "usr-1792914938877-lj357",
+    "role": "STUDENT",
+    "email": "student_25kn_1792914938875@nriit.edu.in",
+    "expiresAt": 1793521922718
+  },
+  "nri_sess_ec29ea09114c01fe6791efdd93d3dd351939a97f911ba750": {
+    "userId": "usr-1792914938877-lj357",
+    "role": "STUDENT",
+    "email": "student_25kn_1792914938875@nriit.edu.in",
+    "expiresAt": 1793523601735
+  },
+  "nri_sess_8d89c811a9c988ab1fb973f1ca5d0a6b8fe353ccd6da0fd2": {
+    "userId": "usr-1792914938877-lj357",
+    "role": "STUDENT",
+    "email": "student_25kn_1792914938875@nriit.edu.in",
+    "expiresAt": 1793523709494
+  },
+  "nri_sess_cd9eef7b2d85a1eee9645804d4ff8dcc2edda97a8ca02c13": {
+    "userId": "usr-1792905178500-fpt5m",
+    "role": "STUDENT",
+    "email": "shaajanivangaliyappan@gmail.com",
+    "expiresAt": 1793524121797
+  },
+  "nri_sess_8c863f8ef1e87742450fe6cc156794826347319944147b1b": {
+    "userId": "usr-admin-01",
+    "role": "ADMIN",
+    "email": "admin@smarttransit.com",
+    "expiresAt": 1793525860452
+  }
+}

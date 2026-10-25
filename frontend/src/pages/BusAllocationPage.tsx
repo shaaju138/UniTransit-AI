@@ -47,12 +47,12 @@ export const BusAllocationPage: React.FC<BusAllocationPageProps> = ({
   const studentsTravelling = 1080;
   const routesAtRisk = routes.filter(r => r.riskLevel === 'HIGH').length;
 
-  // Nearby and available support buses from NRIIT fleet (configured database IDs)
+  // Nearby and available support buses from TransitIQ fleet (configured database IDs)
   const supportBuses = [
     {
       busId: "veh-demo-d",
-      name: "Assigned Standby Vehicle D",
-      currentRoute: "NRIIT Campus Depot (Standby)",
+      name: "Bus 34 (Standby Shuttle)",
+      currentRoute: "Central Transit Depot (Standby)",
       totalSeats: 35,
       currentOccupancy: 0,
       availableSeats: 35,
@@ -63,7 +63,7 @@ export const BusAllocationPage: React.FC<BusAllocationPageProps> = ({
     },
     {
       busId: "veh-demo-c",
-      name: "Assigned Vehicle C",
+      name: "Bus 33",
       currentRoute: "Route 3 (Gannavaram Corridor)",
       totalSeats: 45,
       currentOccupancy: 19,
@@ -82,14 +82,14 @@ export const BusAllocationPage: React.FC<BusAllocationPageProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-extrabold text-slate-900 font-['Outfit']">
-              NRI University Bus Allocation
+              TransitIQ Bus Allocation
             </h1>
             <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-blue-200">
-              NRIIT Fleet Only
+              TransitIQ Fleet Only
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            AI-powered bus demand prediction and intelligent capacity management for NRI Institute of Technology.
+            AI-powered bus demand prediction and intelligent capacity management for TransitIQ Network.
           </p>
         </div>
 
@@ -100,16 +100,16 @@ export const BusAllocationPage: React.FC<BusAllocationPageProps> = ({
         </div>
       </div>
 
-      {/* 1. NRIIT Transport Overview KPI Strip (6 Metrics) - 1 col on mobile, 2/3 on tablet, 6 on desktop */}
+      {/* 1. TransitIQ Transport Overview KPI Strip (6 Metrics) - 1 col on mobile, 2/3 on tablet, 6 on desktop */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-3.5">
         <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs min-w-0">
           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
-            1. NRIIT OVERVIEW
+            1. TRANSIT OVERVIEW
           </span>
           <div className="mt-1 text-base font-bold text-slate-900 font-['Outfit'] truncate">
-            NRIIT Campus
+            Central Terminal
           </div>
-          <span className="text-[10px] text-slate-500 mt-0.5 block truncate">Pothavarappadu Hub</span>
+          <span className="text-[10px] text-slate-500 mt-0.5 block truncate">Vijayawada Hub</span>
         </div>
 
         <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs min-w-0">
